@@ -1,32 +1,34 @@
 # PeaBox Photo Lab
 
-A practical, privacy-first photo editor built with Python, Streamlit, Pillow and NumPy.
+A privacy-first, local photo editor for creators, bloggers, small businesses, and everyday users. It runs in a browser while Python, Streamlit, Pillow, and NumPy perform the editing.
 
-## Features
+## Highlights
 
-- Live browser-based preview
-- Brightness, contrast, saturation, sharpness, temperature, tint, shadows and highlights
-- Crop presets, rotation and flips
-- Smart Auto Optimize using histogram-aware exposure and contrast correction
-- Creative Lab: Selective Colour Pop, Duotone, Dreamy Glow, Pencil Sketch, Pixel Art and Focus Vignette
-- Borders and configurable watermark
-- Long-edge resizing
-- JPEG, PNG and WebP export
-- Fresh encoding strips original EXIF metadata by default
-- Non-destructive editing: every change is regenerated from the original upload
+- Non-destructive adjustments and live before/after preview
+- Smart auto optimization and five creative presets
+- Light, colour, crop, rotate, mirror, borders, and watermark controls
+- Selective colour, duotone, dreamy glow, pencil sketch, pixel art, and vignette
+- Dominant colour palette extraction
+- Downloadable style proof sheet
+- Social format pack for square, portrait, landscape, and story crops
+- Image health check and fresh exports without copied EXIF metadata
+- JPEG, PNG, and WebP export
 
-## Quick start
+## Run locally
 
 ### Windows
+
 Double-click `run_windows.bat`.
 
-### Linux/macOS
+### Linux or macOS
+
 ```bash
 chmod +x run_linux_mac.sh
 ./run_linux_mac.sh
 ```
 
-### Manual
+### Manual setup
+
 ```bash
 python -m venv .venv
 # Windows: .venv\Scripts\activate
@@ -35,36 +37,17 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Open the URL shown in the terminal, normally `http://localhost:8501`.
-
-## Requirements
-
-- Python 3.10 or newer, 64-bit recommended
-- Modern browser
-- Approximately 250 MB free space for Python environment and packages
-- 4 GB RAM minimum; 8 GB recommended for large photos
-
 ## Privacy
 
-The app processes the upload in the Streamlit server process. When run locally, the image stays on your computer. The app does not intentionally write uploads to disk. Export creates a newly encoded image without copying original EXIF metadata. If deployed to a remote server, uploaded image bytes are necessarily sent to that server, so secure the deployment appropriately.
+When run locally, the application processes image bytes on your computer and does not intentionally persist uploads. Exports are newly encoded and original EXIF metadata is not copied. A remote deployment necessarily receives uploaded files on that server, so operators must secure the deployment.
 
-## Project structure
+## Repository topics
 
-```text
-PeaBox-Photo-Lab/
-├── app.py
-├── requirements.txt
-├── run_windows.bat
-├── run_linux_mac.sh
-├── LICENSE
-└── README.md
-```
+`python`, `streamlit`, `pillow`, `photo-editor`, `image-processing`, `creator-tools`, `privacy-first`, `webp`, `peabox`
 
-## Limitations
+## Contributing and security
 
-- Crop is center-based rather than a drag-to-select canvas.
-- Very large images can consume several times their compressed file size in memory.
-- Effects are intended for still images, not animated GIF/WebP files.
+Read `CONTRIBUTING.md`. Report security issues using `SECURITY.md`, not a public issue.
 
 ## License
 
