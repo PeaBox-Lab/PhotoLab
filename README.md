@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.19  
+**Current release:** v0.2.20  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -174,3 +174,9 @@ MIT
 - Color Density from -100 to +100
 - Image Inspector clipping check for near-black and near-white channels
 - Portfolio Master and Chat Optimized export presets
+
+
+## v0.2.20 additions
+- Targeted Colour saturation adjustment by selectable hue and range
+- Noise Analysis with practical denoise/sharpen guidance
+- Email Small and Web Hero export presets

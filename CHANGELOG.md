@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.20
+- Added Targeted Colour saturation control by hue and range width.
+- Added Noise Analysis with editing guidance in Image Inspector.
+- Added Email Small and Web Hero export presets.
+- Retained all v0.2.19 functionality.
+
+
 ## 0.2.19
 - Added Presence / Atmospheric Clarity with negative-to-positive control.
 - Added Color Density control for subtle desaturation or richer colour.
