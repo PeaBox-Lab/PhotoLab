@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.22
+- Added Tilt-Shift with focus-band center, width, and blur strength.
+- Added customizable image Frame with size and color.
+- Added Compression Advisor using tonal entropy and noise activity.
+- Added Print Proof and Ultra Web export presets.
+- Retained all v0.2.21 functionality.
+
+
 ## 0.2.21
 - Added local Dodge/Burn with position, radius, and strength controls.
 - Added Tonal Entropy / Image Complexity analysis with export guidance.

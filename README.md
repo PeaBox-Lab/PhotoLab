@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.21  
+**Current release:** v0.2.22  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -186,3 +186,10 @@ MIT
 - Local Dodge/Burn with adjustable X/Y position, radius, and strength
 - Tonal Entropy / Image Complexity analysis
 - Detailed Web and Draft Proof export presets
+
+
+## v0.2.22 additions
+- Tilt-Shift focus-band effect
+- Custom frame size and colour
+- Compression Advisor with suggested JPEG/WebP quality
+- Print Proof and Ultra Web export presets

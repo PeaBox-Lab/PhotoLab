@@ -1,13 +1,14 @@
-# PeaBox Photo Lab v0.2.21
+# PeaBox Photo Lab v0.2.22
 
-Cumulative feature release built from v0.2.20 with all previous functionality retained.
+Cumulative release built from v0.2.21 with all prior features retained.
 
 ## New features
-- Local Dodge/Burn: brighten or darken a soft circular region with adjustable X/Y position, radius, and strength.
-- Image Complexity analysis: calculates grayscale tonal entropy and gives export-quality guidance for simple, moderate, or highly detailed images.
-- Detailed Web preset: WebP quality 95, 2560 px long edge.
-- Draft Proof preset: JPEG quality 70, 1600 px long edge.
+- Tilt-Shift effect with adjustable blur strength, focus-band center, and band width.
+- Custom Frame with 0-10% size and selectable colour.
+- Compression Advisor analyzes tonal entropy and fine-detail/noise activity and suggests JPEG/WebP quality (78, 86, or 93).
+- Print Proof preset: JPEG quality 95, 4096 px long edge.
+- Ultra Web preset: WebP quality 96, 4096 px long edge.
 
 ## Release conventions
-- Version: 0.2.21
-- Archive: peabox-photo-lab-v0.2.21.zip
+- Version: 0.2.22
+- Archive: peabox-photo-lab-v0.2.22.zip
