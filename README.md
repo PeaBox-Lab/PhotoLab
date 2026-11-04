@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.1  
+**Current release:** v0.2.2  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -17,6 +17,7 @@ A privacy-first, local photo editor for creators, bloggers, small businesses, an
 - Social format pack for square, portrait, landscape, and story crops
 - Image health check and fresh exports without copied EXIF metadata
 - JPEG, PNG, and WebP export
+- Export presets for Web High Quality, Social 1080, and Archive PNG
 
 ## Run locally
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.2
+- Added reusable export presets: Web High Quality, Social 1080, and Archive PNG.
+- Retained Custom export mode and all v0.2.1 functionality.
+- Updated version metadata, README, release notes, and package naming.
+
+
 ## 0.2.1
 - Normalized project versioning to semantic three-part format `99.99.99`.
 - Standardized release archive naming as `peabox-photo-lab-v<version>.zip`.

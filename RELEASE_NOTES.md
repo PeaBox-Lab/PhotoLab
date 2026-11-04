@@ -1,14 +1,16 @@
-# PeaBox Photo Lab v0.2.1
+# PeaBox Photo Lab v0.2.2
 
-This release establishes the `99.99.99` versioning convention and the `peabox-photo-lab-v<version>.zip` archive naming convention while retaining all functionality from the supplied source baseline.
+Incremental release built on v0.2.1 with all existing functionality retained.
 
-## Included capabilities
-- Non-destructive photo adjustments and before/after preview
-- Smart auto optimization and creative presets
-- Crop, rotate, mirror, flip, light and colour controls
-- Selective colour, duotone, glow, sketch, pixel art and vignette effects
-- Borders and watermarking
-- Palette extraction and preset proof sheet
-- Social-format ZIP generation
-- Image health/privacy inspector
-- JPEG, PNG and WebP exports
+## New
+- Export presets for common output workflows:
+  - Web High Quality: WebP, quality 90, 2048 px long edge
+  - Social 1080: JPEG, quality 90, 1080 px long edge
+  - Archive PNG: PNG, original dimensions
+- Custom export remains available.
+
+## Compatibility
+- Python 3.10+
+- Streamlit 1.40 to below 2.0
+- Pillow 11 to below 13
+- NumPy 2 to below 3

@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.1</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.2</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -141,7 +141,9 @@ with info_tab:
     st.markdown('**Privacy note:** exported files are newly encoded and do not copy the uploaded file’s EXIF metadata.')
 
 st.divider(); st.subheader('3. Export')
-a,b,c,d=st.columns([1,1,1,2]); fmt=a.selectbox('Format',['JPEG','PNG','WEBP']); quality=b.slider('Quality',60,100,92); maxside=c.selectbox('Long edge',['Original',4096,2560,2048,1600,1080]); name=d.text_input('Filename','peabox-edit')
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original')}[preset_export]
+a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 out=im.copy()
 if maxside!='Original' and max(out.size)>int(maxside):
     s=int(maxside)/max(out.size); out=out.resize((int(out.width*s),int(out.height*s)),R)
