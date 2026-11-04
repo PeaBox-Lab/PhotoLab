@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.18  
+**Current release:** v0.2.19  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -167,3 +167,10 @@ MIT
 - Orton Glow creative finishing effect
 - Dynamic Range analysis in Image Inspector
 - Marketplace JPEG and Tiny Web WebP export presets
+
+
+## v0.2.19 additions
+- Presence / Atmospheric Clarity from -100 to +100
+- Color Density from -100 to +100
+- Image Inspector clipping check for near-black and near-white channels
+- Portfolio Master and Chat Optimized export presets

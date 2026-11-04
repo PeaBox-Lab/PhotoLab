@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.18
+# PeaBox Photo Lab v0.2.19
 
-Cumulative feature release based on v0.2.17. All previous capabilities are retained.
+Cumulative feature release built from v0.2.18 with all previous capabilities retained.
 
 ## New features
-- Defringe / Chromatic Cleanup (0-100) to reduce strong colored edge artifacts.
-- Orton Glow (0-100) for a soft luminous photographic finish.
-- Dynamic Range analysis using 1st and 99th luminance percentiles, tonal-span measurement, and contextual guidance.
-- Marketplace preset: JPEG quality 90, 2048 px long edge.
-- Tiny Web preset: WebP quality 68, 1080 px long edge.
+- Presence / Atmospheric Clarity (-100 to +100): negative values soften atmosphere; positive values strengthen broad detail separation.
+- Color Density (-100 to +100) for controlled reduction or enrichment of chroma.
+- Clipping Check in Image Inspector reports near-black and near-white channel percentages and warns at a 5% review threshold.
+- Portfolio Master preset: JPEG quality 97, 4096 px long edge.
+- Chat Optimized preset: WebP quality 78, 1600 px long edge.
 
 ## Release conventions
-- Version: 0.2.18
-- Archive: peabox-photo-lab-v0.2.18.zip
+- Version: 0.2.19
+- Archive: peabox-photo-lab-v0.2.19.zip

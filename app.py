@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.18</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.19</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -200,6 +200,17 @@ def orton(im,amount):
     return Image.blend(im,glow,min(.38,amount/260))
 def dynamic_range(im):
     g=np.asarray(ImageOps.grayscale(im)).astype(float); p1,p99=np.percentile(g,[1,99]); return float(p1),float(p99),float(p99-p1)
+def haze_glow_balance(im,amount):
+    if amount==0:return im
+    a=np.asarray(im).astype(float); blur=np.asarray(im.filter(ImageFilter.GaussianBlur(12))).astype(float); k=abs(amount)/100*.35
+    out=a+(a-blur)*k if amount>0 else a*(1-k)+blur*k
+    return Image.fromarray(np.uint8(np.clip(out,0,255)))
+def color_density(im,amount):
+    if amount==0:return im
+    a=np.asarray(im).astype(float); gray=a.mean(2,keepdims=True); k=amount/100*.35
+    return Image.fromarray(np.uint8(np.clip(a+(a-gray)*k,0,255)))
+def clipping_stats(im):
+    a=np.asarray(im).astype(float); return float((a<=3).mean()*100),float((a>=252).mean()*100)
 def image_stats(im):
     a=np.asarray(im).astype(float)
     lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
@@ -257,7 +268,7 @@ with st.sidebar:
         chroma_amt=st.slider('Chromatic pop',0,100,0); skin_soft=st.slider('Soft skin',0,100,0)
         mono_mix_on=st.toggle('Monochrome channel mixer'); mono_r=st.slider('Mono red',0,200,30); mono_g=st.slider('Mono green',0,200,59); mono_b=st.slider('Mono blue',0,200,11)
         st.caption('Tone range'); black_pt=st.slider('Black point',0,80,0); white_pt=st.slider('White point',175,255,255); auto_temp=st.slider('Auto temperature correction',0,100,0)
-        defringe_amt=st.slider('Defringe / chromatic cleanup',0,100,0); orton_amt=st.slider('Orton glow',0,100,0)
+        defringe_amt=st.slider('Defringe / chromatic cleanup',0,100,0); orton_amt=st.slider('Orton glow',0,100,0); presence=st.slider('Presence / atmospheric clarity',-100,100,0); density=st.slider('Color density',-100,100,0)
         st.caption('Date / caption stamp'); stamp_text=st.text_input('Stamp text',placeholder='2026-11-05 or a short caption'); stamp_pos=st.selectbox('Stamp position',['Bottom right','Bottom left','Top right','Top left'])
     with st.expander('Creative add-ons'):
         eff=st.selectbox('Effect',['None','Selective Colour Pop','Duotone','Dreamy Glow','Pencil Sketch','Pixel Art','Focus Vignette']); intensity=st.slider('Effect strength',0,100,45); hue=st.slider('Colour-pop hue',0,359,25); hr=st.slider('Hue range',5,90,30); dd=st.color_picker('Duotone shadows','#172554'); dl=st.color_picker('Duotone highlights','#fbbf24'); block=st.slider('Pixel size',3,40,12)
@@ -312,6 +323,8 @@ im=rgb_curve(im,black_pt,white_pt)
 im=color_temperature_auto(im,auto_temp)
 im=defringe(im,defringe_amt)
 im=orton(im,orton_amt)
+im=haze_glow_balance(im,presence)
+im=color_density(im,density)
 im=add_date_stamp(im,stamp_text,stamp_pos)
 im=preset(im,pre)
 if smart: im=auto(im)
@@ -382,10 +395,14 @@ with info_tab:
     if dr_span<120: st.info('Compressed tonal span detected. Auto Levels, Contrast, or Dehaze can increase separation.')
     elif dr_span>235: st.info('Very wide tonal span detected. Check highlight and shadow clipping before export.')
     else: st.success('Dynamic range is broadly distributed for general photo editing.')
+    st.subheader('Clipping check')
+    black_clip,white_clip=clipping_stats(im); q1,q2=st.columns(2); q1.metric('Near-black channels',f'{black_clip:.2f}%'); q2.metric('Near-white channels',f'{white_clip:.2f}%')
+    if black_clip>5 or white_clip>5: st.warning('Clipping risk detected. Review Exposure, Black/White Point, Highlights, and Shadows.')
+    else: st.success('No material channel clipping detected at the 5% review threshold.')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master','Desktop Wallpaper','Fast Preview','Marketplace','Tiny Web'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original'),'Desktop Wallpaper':('JPEG',93,4096),'Fast Preview':('WEBP',76,1080),'Marketplace':('JPEG',90,2048),'Tiny Web':('WEBP',68,1080)}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master','Desktop Wallpaper','Fast Preview','Marketplace','Tiny Web','Portfolio Master','Chat Optimized'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original'),'Desktop Wallpaper':('JPEG',93,4096),'Fast Preview':('WEBP',76,1080),'Marketplace':('JPEG',90,2048),'Tiny Web':('WEBP',68,1080),'Portfolio Master':('JPEG',97,4096),'Chat Optimized':('WEBP',78,1600)}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:

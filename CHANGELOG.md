@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.19
+- Added Presence / Atmospheric Clarity with negative-to-positive control.
+- Added Color Density control for subtle desaturation or richer colour.
+- Added export Clipping Check to Image Inspector.
+- Added Portfolio Master and Chat Optimized presets.
+- Retained all v0.2.18 functionality.
+
+
 ## 0.2.18
 - Added Defringe / Chromatic Cleanup control.
 - Added Orton Glow creative finishing effect.
