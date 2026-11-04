@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.13  
+**Current release:** v0.2.14  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -132,3 +132,10 @@ MIT
 - Bloom/Glow for soft luminous highlights
 - Color Cast Analysis with RGB means and channel-spread guidance
 - Gallery WebP and Quick Share export presets
+
+
+## v0.2.14 additions
+- Texture Clarity for broader local detail enhancement
+- Independent shadow-color hue/strength grading
+- Independent highlight-color hue/strength grading
+- Social High Quality and Proof JPEG export presets

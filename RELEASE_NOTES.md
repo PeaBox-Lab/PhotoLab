@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.13
+# PeaBox Photo Lab v0.2.14
 
-Cumulative feature release built from v0.2.12 with all previous features retained.
+Cumulative feature release built from v0.2.13 with prior capabilities retained.
 
 ## New features
-- Dehaze (0-100) for haze reduction and stronger tonal separation.
-- Bloom / Glow (0-100) for a soft luminous finishing effect.
-- Color Cast Analysis in Image Inspector with per-channel mean values, channel spread, and correction guidance.
-- Gallery WebP preset: WebP quality 92, 2048 px long edge.
-- Quick Share preset: JPEG quality 80, 1080 px long edge.
+- Texture Clarity, adjustable 0-100, for broader local contrast enhancement.
+- Shadow Color grading with independently adjustable hue and strength.
+- Highlight Color grading with independently adjustable hue and strength.
+- Social High Quality preset: JPEG quality 94, 2048 px long edge.
+- Proof JPEG preset: JPEG quality 75, 1600 px long edge.
 
 ## Release conventions
-- Version: 0.2.13
-- Archive: peabox-photo-lab-v0.2.13.zip
+- Version: 0.2.14
+- Archive: peabox-photo-lab-v0.2.14.zip

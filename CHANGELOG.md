@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.14
+- Added Texture Clarity for broader local contrast enhancement.
+- Added independent Shadow Color and Highlight Color grading controls.
+- Added Social High Quality and Proof JPEG export presets.
+- Retained all v0.2.13 functionality.
+
+
 ## 0.2.13
 - Added Dehaze control for hazy/low-contrast images.
 - Added Bloom/Glow creative finishing control.
