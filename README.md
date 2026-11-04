@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.25  
+**Current release:** v0.2.26  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -213,3 +213,10 @@ MIT
 - Directional Graduated Filter with selectable colour and strength
 - Luminance Balance analysis using mean and median brightness
 - Editorial Web and Archive JPEG export presets
+
+
+## v0.2.26 additions
+- Custom Edge Fade with selectable colour and intensity
+- Preview-only Rule-of-Thirds grid
+- Composition Advisor with orientation-specific guidance
+- Story Portrait and Slide Ready export presets

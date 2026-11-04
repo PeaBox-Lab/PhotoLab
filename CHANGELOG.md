@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.26
+- Added customizable Edge Fade.
+- Added preview-only Rule-of-Thirds composition grid.
+- Added Composition Advisor with orientation-specific workflow guidance.
+- Added Story Portrait and Slide Ready export presets.
+- Retained all v0.2.25 functionality.
+
+
 ## 0.2.25
 - Added Graduated Filter with directional colour overlay and adjustable strength.
 - Added Luminance Balance analysis comparing mean and median brightness.
