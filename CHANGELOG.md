@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.16
+- Added Monochrome Channel Mixer with independent RGB weighting.
+- Added Highlights, Midtones, and Shadows luminance-mask preview overlays.
+- Added Contact Sheet Web and Lossless Master export presets.
+- Retained all v0.2.15 functionality.
+
+
 ## 0.2.15
 - Added Chromatic Pop for saturation-aware color enhancement.
 - Added Soft Skin diffusion control.

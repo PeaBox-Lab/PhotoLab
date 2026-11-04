@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.15</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.16</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -166,6 +166,17 @@ def soft_skin(im,amount):
     smooth=im.filter(ImageFilter.GaussianBlur(max(.5,amount/25))); return Image.blend(im,smooth,min(.45,amount/220))
 def crop_safe_area(im,percent):
     p=max(0,min(20,percent))/100; x=int(im.width*p); y=int(im.height*p); return (x,y,im.width-x,im.height-y)
+def luminance_mask_preview(im,mode,opacity=55):
+    a=np.asarray(im).astype(float); lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
+    if mode=='Highlights': mask=np.clip((lum-150)/105,0,1)
+    elif mode=='Shadows': mask=np.clip((105-lum)/105,0,1)
+    else: mask=1-np.clip(np.abs(lum-128)/128,0,1)
+    overlay=np.zeros_like(a); overlay[...,0]=255; overlay[...,1]=80
+    k=(mask*(opacity/100)*.65)[...,None]
+    return Image.fromarray(np.uint8(np.clip(a*(1-k)+overlay*k,0,255)))
+def monochrome_mix(im,r,g,b):
+    a=np.asarray(im).astype(float); total=max(1,r+g+b); gray=(a[...,0]*r+a[...,1]*g+a[...,2]*b)/total
+    return Image.fromarray(np.uint8(np.clip(gray,0,255))).convert('RGB')
 def image_stats(im):
     a=np.asarray(im).astype(float)
     lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
@@ -221,6 +232,7 @@ with st.sidebar:
         wb_strength=st.slider('Auto white balance',0,100,0); micro_amt=st.slider('Micro contrast',0,100,0); fade_hi=st.slider('Highlight fade',0,100,0); dehaze_amt=st.slider('Dehaze',0,100,0); bloom_amt=st.slider('Bloom / glow',0,100,0)
         texture_amt=st.slider('Texture clarity',0,100,0); shadow_color_amt=st.slider('Shadow color strength',0,100,0); shadow_color_hue=st.slider('Shadow color hue',0,360,210); highlight_color_amt=st.slider('Highlight color strength',0,100,0); highlight_color_hue=st.slider('Highlight color hue',0,360,40)
         chroma_amt=st.slider('Chromatic pop',0,100,0); skin_soft=st.slider('Soft skin',0,100,0)
+        mono_mix_on=st.toggle('Monochrome channel mixer'); mono_r=st.slider('Mono red',0,200,30); mono_g=st.slider('Mono green',0,200,59); mono_b=st.slider('Mono blue',0,200,11)
         st.caption('Date / caption stamp'); stamp_text=st.text_input('Stamp text',placeholder='2026-11-05 or a short caption'); stamp_pos=st.selectbox('Stamp position',['Bottom right','Bottom left','Top right','Top left'])
     with st.expander('Creative add-ons'):
         eff=st.selectbox('Effect',['None','Selective Colour Pop','Duotone','Dreamy Glow','Pencil Sketch','Pixel Art','Focus Vignette']); intensity=st.slider('Effect strength',0,100,45); hue=st.slider('Colour-pop hue',0,359,25); hr=st.slider('Hue range',5,90,30); dd=st.color_picker('Duotone shadows','#172554'); dl=st.color_picker('Duotone highlights','#fbbf24'); block=st.slider('Pixel size',3,40,12)
@@ -270,6 +282,7 @@ im=shadow_color(im,shadow_color_hue,shadow_color_amt)
 im=highlight_color(im,highlight_color_hue,highlight_color_amt)
 im=chromatic_pop(im,chroma_amt)
 im=soft_skin(im,skin_soft)
+if mono_mix_on: im=monochrome_mix(im,mono_r,mono_g,mono_b)
 im=add_date_stamp(im,stamp_text,stamp_pos)
 im=preset(im,pre)
 if smart: im=auto(im)
@@ -288,9 +301,11 @@ im=watermark(im,wm,wp,wo)
 edit_tab, creator_tab, info_tab=st.tabs(['Editor','Creator Toolkit','Image Inspector'])
 with edit_tab:
     show=st.toggle('Before and after view',True)
+    mask_mode=st.selectbox('Luminance mask preview',['Off','Highlights','Midtones','Shadows']); mask_opacity=st.slider('Mask overlay opacity',10,100,55) if mask_mode!='Off' else 55
+    after_preview=luminance_mask_preview(im,mask_mode,mask_opacity) if mask_mode!='Off' else im
     if show:
-        a,b=st.columns(2); a.subheader('Before'); a.image(original,use_container_width=True); b.subheader('After'); b.image(im,use_container_width=True)
-    else: st.image(im,use_container_width=True)
+        a,b=st.columns(2); a.subheader('Before'); a.image(original,use_container_width=True); b.subheader('After'); b.image(after_preview,use_container_width=True)
+    else: st.image(after_preview,use_container_width=True)
     st.caption(f'Original {original.width}×{original.height} | Edited {im.width}×{im.height}')
 with creator_tab:
     st.subheader('Colour palette extractor')
@@ -330,8 +345,8 @@ with info_tab:
     else: st.success('No strong global color cast detected.')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048)}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original')}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:

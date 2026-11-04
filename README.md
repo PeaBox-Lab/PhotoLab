@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.15  
+**Current release:** v0.2.16  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -146,3 +146,10 @@ MIT
 - Soft Skin diffusion control
 - Composition Safe Area preview overlay with adjustable margins
 - Mobile WebP and Client Review export presets
+
+
+## v0.2.16 additions
+- Monochrome Channel Mixer with independent RGB weighting
+- Luminance-mask preview for highlights, midtones, and shadows
+- Adjustable mask overlay opacity
+- Contact Sheet Web and Lossless Master export presets

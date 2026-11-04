@@ -1,14 +1,11 @@
-# PeaBox Photo Lab v0.2.15
+# PeaBox Photo Lab v0.2.16
 
-Cumulative feature release built from v0.2.14 with prior capabilities retained.
+Cumulative release from v0.2.15.
 
 ## New features
-- Chromatic Pop (0-100) targets already-colorful regions for stronger color separation.
-- Soft Skin (0-100) provides controlled diffusion for portraits.
-- Composition Safe Area overlay displays adjustable 2-15% edge margins in preview only, leaving exports untouched.
-- Mobile WebP preset: WebP quality 84, 1600 px long edge.
-- Client Review preset: JPEG quality 88, 2048 px long edge.
+- Monochrome Channel Mixer with independent RGB weights from 0-200.
+- Luminance Mask Preview for Highlights, Midtones, and Shadows with adjustable overlay opacity. Preview overlays do not affect exports.
+- Contact Sheet Web preset: WebP quality 86, 2048 px long edge.
+- Lossless Master preset: PNG at original resolution.
 
-## Release conventions
-- Version: 0.2.15
-- Archive: peabox-photo-lab-v0.2.15.zip
+All prior functionality is retained.
