@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.8
+# PeaBox Photo Lab v0.2.9
 
-Cumulative feature release built from v0.2.7. All earlier editing, inspector, creator, privacy, and export capabilities are retained.
+Cumulative feature release built from v0.2.8. All earlier features remain available.
 
 ## New features
-- Lens Vignette with independently adjustable amount and edge softness.
-- Date/Caption Stamp with top-left, top-right, bottom-left, and bottom-right placement.
-- Responsive stamp sizing and a readable translucent-style backdrop.
-- Phone Wallpaper export preset: JPEG quality 92, 2560 px long edge.
-- Square Profile export preset: JPEG quality 92, 1080 px long edge.
+- Soft Focus, adjustable 0-100, for controlled photographic diffusion.
+- Fine Detail, adjustable 0-100, for subtle texture enhancement.
+- Messaging preset: JPEG quality 85, 1600 px long edge.
+- Web Thumbnail preset: WebP quality 82, 1080 px long edge.
+- Export summary now shows output resolution, megapixels, format, compression quality/lossless status, and encoded file size.
 
 ## Release conventions
-- Version: 0.2.8
-- Archive: peabox-photo-lab-v0.2.8.zip
+- Version: 0.2.9
+- Archive: peabox-photo-lab-v0.2.9.zip

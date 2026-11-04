@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.9
+- Added Soft Focus finishing control.
+- Added Fine Detail enhancement control.
+- Added Messaging and Web Thumbnail export presets.
+- Expanded export summary with format and quality/lossless status.
+- Retained all v0.2.8 functionality.
+
+
 ## 0.2.8
 - Added adjustable Lens Vignette with softness control.
 - Added Date/Caption Stamp with four corner positions.

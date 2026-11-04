@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.8  
+**Current release:** v0.2.9  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -97,3 +97,10 @@ MIT
 - Adjustable Lens Vignette with edge softness control
 - Date or caption stamping in any corner
 - Phone Wallpaper and Square Profile export presets
+
+
+## v0.2.9 additions
+- Soft Focus finishing tool for gentle diffusion
+- Fine Detail enhancement for texture definition
+- Messaging JPEG and Web Thumbnail WebP export presets
+- Richer export summary including format and quality status
