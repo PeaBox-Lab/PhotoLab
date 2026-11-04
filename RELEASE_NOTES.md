@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.22
+# PeaBox Photo Lab v0.2.23
 
-Cumulative release built from v0.2.21 with all prior features retained.
+Cumulative release built from v0.2.22 with all prior features retained.
 
 ## New features
-- Tilt-Shift effect with adjustable blur strength, focus-band center, and band width.
-- Custom Frame with 0-10% size and selectable colour.
-- Compression Advisor analyzes tonal entropy and fine-detail/noise activity and suggests JPEG/WebP quality (78, 86, or 93).
-- Print Proof preset: JPEG quality 95, 4096 px long edge.
-- Ultra Web preset: WebP quality 96, 4096 px long edge.
+- Radial Focus: adjustable focus X/Y position, focus radius, and surrounding blur strength.
+- Color Wash: selectable colour with adjustable blending strength.
+- Resolution Advisor: classifies the edited image as Small, Medium, or Large and reports megapixels plus workflow guidance.
+- Retina Web preset: WebP quality 93, 4096 px long edge.
+- Original Backup preset: lossless PNG at original resolution.
 
 ## Release conventions
-- Version: 0.2.22
-- Archive: peabox-photo-lab-v0.2.22.zip
+- Version: 0.2.23
+- Archive: peabox-photo-lab-v0.2.23.zip

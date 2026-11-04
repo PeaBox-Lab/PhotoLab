@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.23
+- Added Radial Focus with adjustable center, radius, and blur strength.
+- Added customizable Color Wash.
+- Added Resolution Advisor with image-size classification and workflow guidance.
+- Added Retina Web and Original Backup export presets.
+- Retained all v0.2.22 functionality.
+
+
 ## 0.2.22
 - Added Tilt-Shift with focus-band center, width, and blur strength.
 - Added customizable image Frame with size and color.

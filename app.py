@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.22</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.23</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -240,6 +240,21 @@ def border_frame(im,size,color):
 def compression_hint(im):
     ent=entropy_score(im); noise=noise_score(im);
     return ('High',93) if ent>7.3 or noise>10 else (('Medium',86) if ent>6 else ('Low',78))
+def radial_focus(im,xpct,ypct,radius,strength):
+    if strength<=0:return im
+    a=np.asarray(im).astype(float); blur=np.asarray(im.filter(ImageFilter.GaussianBlur(max(1,strength/12)))).astype(float); h,w=a.shape[:2]
+    yy,xx=np.ogrid[:h,:w]; cx=w*xpct/100; cy=h*ypct/100; rad=max(1,min(w,h)*radius/100); dist=np.sqrt((xx-cx)**2+(yy-cy)**2)
+    mask=np.clip((dist-rad)/(rad*.8+1),0,1)[...,None]
+    return Image.fromarray(np.uint8(np.clip(a*(1-mask)+blur*mask,0,255)))
+def color_wash(im,color,strength):
+    if strength<=0:return im
+    c=tuple(int(color[i:i+2],16) for i in (1,3,5)); layer=Image.new('RGB',im.size,c)
+    return Image.blend(im,layer,min(.35,strength/285))
+def resolution_health(im):
+    mp=im.width*im.height/1_000_000
+    if mp>=12:return 'Large',mp
+    if mp>=4:return 'Medium',mp
+    return 'Small',mp
 def image_stats(im):
     a=np.asarray(im).astype(float)
     lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
@@ -301,6 +316,8 @@ with st.sidebar:
         st.caption('Targeted colour'); target_hue=st.slider('Target hue',0,360,200); target_width=st.slider('Hue range width',5,90,30); target_sat=st.slider('Target saturation',-100,100,0)
         st.caption('Local dodge / burn'); db_mode=st.selectbox('Local tool',['Off','Dodge','Burn']); db_x=st.slider('Local X %',0,100,50); db_y=st.slider('Local Y %',0,100,50); db_radius=st.slider('Local radius %',5,50,20); db_strength=st.slider('Local strength',0,100,0)
         st.caption('Tilt-shift'); ts_strength=st.slider('Tilt-shift strength',0,100,0); ts_center=st.slider('Focus band center %',0,100,50); ts_width=st.slider('Focus band width %',5,70,30)
+        st.caption('Radial focus'); radial_strength=st.slider('Radial blur strength',0,100,0); radial_x=st.slider('Radial focus X %',0,100,50); radial_y=st.slider('Radial focus Y %',0,100,50); radial_radius=st.slider('Radial focus radius %',5,50,25)
+        st.caption('Color wash'); wash_strength=st.slider('Color wash strength',0,100,0); wash_color=st.color_picker('Color wash color','#F2B880')
         st.caption('Frame'); frame_size=st.slider('Frame size %',0,10,0); frame_color=st.color_picker('Frame color','#FFFFFF')
         st.caption('Date / caption stamp'); stamp_text=st.text_input('Stamp text',placeholder='2026-11-05 or a short caption'); stamp_pos=st.selectbox('Stamp position',['Bottom right','Bottom left','Top right','Top left'])
     with st.expander('Creative add-ons'):
@@ -361,6 +378,8 @@ im=color_density(im,density)
 im=selective_saturation(im,target_hue,target_width,target_sat)
 if db_mode!='Off': im=local_dodge_burn(im,db_x,db_y,db_radius,db_strength,db_mode)
 im=tilt_shift(im,ts_center,ts_width,ts_strength)
+im=radial_focus(im,radial_x,radial_y,radial_radius,radial_strength)
+im=color_wash(im,wash_color,wash_strength)
 im=border_frame(im,frame_size,frame_color)
 im=add_date_stamp(im,stamp_text,stamp_pos)
 im=preset(im,pre)
@@ -448,10 +467,12 @@ with info_tab:
     else: st.success('Tonal complexity is moderate and suitable for standard export presets.')
     st.subheader('Compression advisor')
     compression_class,suggested_quality=compression_hint(im); st.metric('Suggested JPEG/WebP quality',str(suggested_quality)); st.caption(f'Image compression class: {compression_class}. This suggestion uses tonal entropy and fine-detail activity.')
+    st.subheader('Resolution advisor')
+    resolution_class,megapixels=resolution_health(im); st.metric('Image size class',resolution_class); st.caption(f'{megapixels:.2f} MP at {im.width} x {im.height} px. Large images are best for print/master exports; smaller images are better suited to web/social presets.')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master','Desktop Wallpaper','Fast Preview','Marketplace','Tiny Web','Portfolio Master','Chat Optimized','Email Small','Web Hero','Detailed Web','Draft Proof','Print Proof','Ultra Web'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original'),'Desktop Wallpaper':('JPEG',93,4096),'Fast Preview':('WEBP',76,1080),'Marketplace':('JPEG',90,2048),'Tiny Web':('WEBP',68,1080),'Portfolio Master':('JPEG',97,4096),'Chat Optimized':('WEBP',78,1600),'Email Small':('JPEG',76,1080),'Web Hero':('WEBP',91,2560),'Detailed Web':('WEBP',95,2560),'Draft Proof':('JPEG',70,1600),'Print Proof':('JPEG',95,4096),'Ultra Web':('WEBP',96,4096)}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master','Desktop Wallpaper','Fast Preview','Marketplace','Tiny Web','Portfolio Master','Chat Optimized','Email Small','Web Hero','Detailed Web','Draft Proof','Print Proof','Ultra Web','Retina Web','Original Backup'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original'),'Desktop Wallpaper':('JPEG',93,4096),'Fast Preview':('WEBP',76,1080),'Marketplace':('JPEG',90,2048),'Tiny Web':('WEBP',68,1080),'Portfolio Master':('JPEG',97,4096),'Chat Optimized':('WEBP',78,1600),'Email Small':('JPEG',76,1080),'Web Hero':('WEBP',91,2560),'Detailed Web':('WEBP',95,2560),'Draft Proof':('JPEG',70,1600),'Print Proof':('JPEG',95,4096),'Ultra Web':('WEBP',96,4096),'Retina Web':('WEBP',93,4096),'Original Backup':('PNG',100,'Original')}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:

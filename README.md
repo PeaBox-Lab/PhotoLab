@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.22  
+**Current release:** v0.2.23  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -193,3 +193,10 @@ MIT
 - Custom frame size and colour
 - Compression Advisor with suggested JPEG/WebP quality
 - Print Proof and Ultra Web export presets
+
+
+## v0.2.23 additions
+- Radial Focus with adjustable focus point, radius, and blur strength
+- Custom Color Wash with selectable colour and intensity
+- Resolution Advisor with megapixel and image-size classification
+- Retina Web and Original Backup presets
