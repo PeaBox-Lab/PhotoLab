@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.3  
+**Current release:** v0.2.4  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -63,3 +63,10 @@ MIT
 - Black & white and negative quick effects
 - Custom export width/height with optional aspect-ratio preservation
 - Live output dimensions and encoded file-size preview
+
+
+## v0.2.4 additions
+- Adjustable Sepia effect
+- Exposure Analysis in Image Inspector
+- Automatic warnings for excessive deep shadows or bright highlights
+- Corrected custom-dimension export flow

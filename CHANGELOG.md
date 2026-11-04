@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.4
+- Added adjustable Sepia effect.
+- Added Exposure Analysis with luminance, contrast, deep-shadow, and bright-highlight metrics.
+- Added automatic exposure guidance.
+- Fixed the v0.2.3 custom export dimension path to resize the active edited image correctly.
+- Retained all previous features.
+
+
 ## 0.2.3
 - Added Black & White and Negative quick effects.
 - Added custom export dimensions with optional aspect-ratio preservation.

@@ -1,12 +1,15 @@
-# PeaBox Photo Lab v0.2.3
+# PeaBox Photo Lab v0.2.4
 
-Built cumulatively from v0.2.2.
+Cumulative release built from v0.2.3 with all existing capabilities retained.
 
 ## New features
-1. Black & White quick effect.
-2. Negative quick effect.
-3. Custom export dimensions up to 12,000 x 12,000 pixels.
-4. Optional aspect-ratio preservation for custom resizing.
-5. Live output resolution and encoded file-size preview before download.
+- Adjustable Sepia effect (0-100).
+- Exposure Analysis: mean luminance, contrast spread, deep-shadow percentage, and bright-highlight percentage.
+- Contextual exposure guidance in Image Inspector.
 
-All prior editor, preset, social pack, inspector, privacy and export capabilities are retained.
+## Fixes
+- Fixed custom export dimensions so resizing is applied to the active edited image and export metrics report the actual saved output.
+
+## Release conventions
+- Version: 0.2.4
+- Archive: peabox-photo-lab-v0.2.4.zip

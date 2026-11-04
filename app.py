@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.3</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.4</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -42,6 +42,15 @@ def resize_exact(im,w,h,keep=True):
     return im.resize((w,h),Image.Resampling.LANCZOS)
 
 def grayscale(im): return ImageOps.grayscale(im).convert("RGB")
+def sepia(im,strength=70):
+    g=np.asarray(ImageOps.grayscale(im)).astype(float)
+    a=np.stack([g*1.07+12,g*.94+4,g*.76],axis=2)
+    toned=Image.fromarray(np.uint8(np.clip(a,0,255)))
+    return Image.blend(im,toned,strength/100)
+def image_stats(im):
+    a=np.asarray(im).astype(float)
+    lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
+    return float(lum.mean()),float(lum.std()),float((lum<20).mean()*100),float((lum>235).mean()*100)
 def preset(im,n):
     if n=='Clean Pop': return ImageEnhance.Color(ImageEnhance.Contrast(im).enhance(1.12)).enhance(1.12)
     if n=='Warm Film': return ImageEnhance.Color(temp(im,30)).enhance(.9)
@@ -79,7 +88,7 @@ with st.sidebar:
     pre=st.selectbox('Quick style',['None','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade'])
     smart=st.toggle('Smart Auto Optimize'); aspect=st.selectbox('Crop for a platform',['Original','1:1','4:5','3:2','16:9','9:16'])
     rot=st.select_slider('Rotate',options=[0,90,180,270]); fh=st.toggle('Mirror'); fv=st.toggle('Flip vertically')
-    bw=st.toggle('Black & white'); neg=st.toggle('Negative')
+    bw=st.toggle('Black & white'); neg=st.toggle('Negative'); sep=st.slider('Sepia',0,100,0)
     with st.expander('Light and colour',True):
         br=st.slider('Brightness',-100,100,0); co=st.slider('Contrast',-100,100,0); sa=st.slider('Saturation',-100,100,0); sharp=st.slider('Sharpness',-100,100,0); te=st.slider('Temperature',-100,100,0); sh=st.slider('Shadows',-100,100,0); hi=st.slider('Highlights',-100,100,0)
     with st.expander('Creative add-ons'):
@@ -102,6 +111,9 @@ im=crop_ratio(original,aspect)
 if rot: im=im.rotate(-rot,expand=True,resample=Image.Resampling.BICUBIC)
 if fh: im=ImageOps.mirror(im)
 if fv: im=ImageOps.flip(im)
+if bw: im=grayscale(im)
+if neg: im=ImageOps.invert(im)
+if sep: im=sepia(im,sep)
 im=preset(im,pre)
 if smart: im=auto(im)
 im=ImageEnhance.Brightness(im).enhance(max(.05,1+br/100)); im=ImageEnhance.Contrast(im).enhance(max(0,1+co/100)); im=ImageEnhance.Color(im).enhance(max(0,1+sa/100)); im=ImageEnhance.Sharpness(im).enhance(max(0,1+sharp/50)); im=temp(im,te); im=tone(im,sh,hi)
@@ -146,6 +158,12 @@ with info_tab:
     if min(original.size)<1080: st.warning('This image may look soft in large exports because its shortest side is below 1080 pixels.')
     else: st.success('Resolution is suitable for common web and social exports.')
     st.markdown('**Privacy note:** exported files are newly encoded and do not copy the uploaded file’s EXIF metadata.')
+    st.subheader('Exposure analysis')
+    mean_luma,contrast,shadows_pct,highlights_pct=image_stats(im)
+    e1,e2,e3,e4=st.columns(4); e1.metric('Mean luminance',f'{mean_luma:.0f}/255'); e2.metric('Contrast spread',f'{contrast:.1f}'); e3.metric('Deep shadows',f'{shadows_pct:.1f}%'); e4.metric('Bright highlights',f'{highlights_pct:.1f}%')
+    if shadows_pct>20: st.warning('A large portion of the image is near black. Consider raising Shadows.')
+    if highlights_pct>20: st.warning('A large portion of the image is very bright. Consider lowering Highlights.')
+    if shadows_pct<=20 and highlights_pct<=20: st.success('Exposure distribution looks balanced for general editing.')
 
 st.divider(); st.subheader('3. Export')
 preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG'])
@@ -153,8 +171,8 @@ defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'S
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:
-    r1,r2,r3=st.columns(3); out_w=r1.number_input('Width (px)',1,12000,int(edited.width)); out_h=r2.number_input('Height (px)',1,12000,int(edited.height)); keep_ratio=r3.toggle('Keep aspect ratio',value=True)
-    edited=resize_exact(edited,int(out_w),int(out_h),keep_ratio)
+    r1,r2,r3=st.columns(3); out_w=r1.number_input('Width (px)',1,12000,int(im.width)); out_h=r2.number_input('Height (px)',1,12000,int(im.height)); keep_ratio=r3.toggle('Keep aspect ratio',value=True)
+    im=resize_exact(im,int(out_w),int(out_h),keep_ratio)
 out=im.copy()
 if maxside!='Original' and max(out.size)>int(maxside):
     s=int(maxside)/max(out.size); out=out.resize((int(out.width*s),int(out.height*s)),R)
@@ -163,6 +181,6 @@ if fmt=='JPEG': kw|={'quality':quality,'optimize':True,'progressive':True}
 elif fmt=='WEBP': kw|={'quality':quality,'method':6}
 else: kw|={'optimize':True}
 out.save(buf,**kw); ext={'JPEG':'jpg','PNG':'png','WEBP':'webp'}[fmt]; mime={'JPEG':'image/jpeg','PNG':'image/png','WEBP':'image/webp'}[fmt]
-st.caption(f'Output: {edited.width} x {edited.height} px | Encoded size: {len(buf.getvalue())/1024:.1f} KB')
+st.caption(f'Output: {out.width} x {out.height} px | Encoded size: {len(buf.getvalue())/1024:.1f} KB')
 st.download_button('Download edited photo',buf.getvalue(),f'{Path(name).stem}.{ext}',mime,type='primary',use_container_width=True)
 st.caption('Keyboard accessibility depends on your browser. Every control has a visible label, and the original is never overwritten.')
