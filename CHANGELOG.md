@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.21
+- Added local Dodge/Burn with position, radius, and strength controls.
+- Added Tonal Entropy / Image Complexity analysis with export guidance.
+- Added Detailed Web and Draft Proof presets.
+- Retained all v0.2.20 functionality.
+
+
 ## 0.2.20
 - Added Targeted Colour saturation control by hue and range width.
 - Added Noise Analysis with editing guidance in Image Inspector.

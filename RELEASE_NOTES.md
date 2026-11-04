@@ -1,13 +1,13 @@
-# PeaBox Photo Lab v0.2.20
+# PeaBox Photo Lab v0.2.21
 
-Cumulative feature release built from v0.2.19 with all previous features retained.
+Cumulative feature release built from v0.2.20 with all previous functionality retained.
 
 ## New features
-- Targeted Colour: choose a 0-360 hue, a 5-90 degree hue range, and saturation adjustment from -100 to +100.
-- Noise Analysis: estimates fine-grain image activity and provides guidance for denoising or sharpening.
-- Email Small: JPEG quality 76, 1080 px long edge.
-- Web Hero: WebP quality 91, 2560 px long edge.
+- Local Dodge/Burn: brighten or darken a soft circular region with adjustable X/Y position, radius, and strength.
+- Image Complexity analysis: calculates grayscale tonal entropy and gives export-quality guidance for simple, moderate, or highly detailed images.
+- Detailed Web preset: WebP quality 95, 2560 px long edge.
+- Draft Proof preset: JPEG quality 70, 1600 px long edge.
 
 ## Release conventions
-- Version: 0.2.20
-- Archive: peabox-photo-lab-v0.2.20.zip
+- Version: 0.2.21
+- Archive: peabox-photo-lab-v0.2.21.zip

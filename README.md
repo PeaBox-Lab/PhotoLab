@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.20  
+**Current release:** v0.2.21  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -180,3 +180,9 @@ MIT
 - Targeted Colour saturation adjustment by selectable hue and range
 - Noise Analysis with practical denoise/sharpen guidance
 - Email Small and Web Hero export presets
+
+
+## v0.2.21 additions
+- Local Dodge/Burn with adjustable X/Y position, radius, and strength
+- Tonal Entropy / Image Complexity analysis
+- Detailed Web and Draft Proof export presets
