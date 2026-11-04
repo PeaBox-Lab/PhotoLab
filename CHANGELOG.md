@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.12
+- Added adjustable Gray World Auto White Balance.
+- Added Micro Contrast for local texture definition.
+- Added Highlight Fade for softer bright regions.
+- Added Blog Optimized WebP and Master JPEG export presets.
+- Retained all v0.2.11 functionality.
+
+
 ## 0.2.11
 - Added Gamma adjustment.
 - Added green-to-magenta Tint correction.

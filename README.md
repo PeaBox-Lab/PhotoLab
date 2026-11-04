@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.11  
+**Current release:** v0.2.12  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -118,3 +118,10 @@ MIT
 - Green-to-magenta Tint correction
 - Auto Levels with adjustable 0-10% cutoff
 - Presentation HD and Presentation 4K export presets
+
+
+## v0.2.12 additions
+- Adjustable Auto White Balance based on the Gray World method
+- Micro Contrast for local texture and dimensionality
+- Highlight Fade for softer bright tones
+- Blog Optimized WebP and Master JPEG export presets
