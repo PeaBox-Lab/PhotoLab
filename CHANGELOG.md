@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.25
+- Added Graduated Filter with directional colour overlay and adjustable strength.
+- Added Luminance Balance analysis comparing mean and median brightness.
+- Added Editorial Web and Archive JPEG export presets.
+- Retained all v0.2.24 functionality.
+
+
 ## 0.2.24
 - Added Center Light for localized radial brightening or darkening.
 - Added Smart Export Recommendation combining resolution, complexity, and detail activity.

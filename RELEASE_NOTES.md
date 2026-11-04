@@ -1,14 +1,13 @@
-# PeaBox Photo Lab v0.2.24
+# PeaBox Photo Lab v0.2.25
 
-Cumulative feature release built from v0.2.23 with all prior functionality retained.
+Cumulative feature release built from v0.2.24 with all prior functionality retained.
 
 ## New features
-- Center Light: adjustable X/Y position, radius, and -100 to +100 localized light strength.
-- Smart Export Recommendation: combines resolution class, tonal complexity, and fine-detail activity to suggest quality and output long edge.
-- Color Neutrality metric for quick review of global channel balance.
-- Smart Web preset: WebP quality 90, 2560 px long edge.
-- High Res JPEG preset: JPEG quality 96, 4096 px long edge.
+- Graduated Filter: Top, Bottom, Left, or Right direction with selectable colour and 0-100 strength.
+- Luminance Balance analysis compares mean and median luminance and flags strongly uneven distributions.
+- Editorial Web preset: WebP quality 92, 2560 px long edge.
+- Archive JPEG preset: JPEG quality 99 at original resolution.
 
 ## Release conventions
-- Version: 0.2.24
-- Archive: peabox-photo-lab-v0.2.24.zip
+- Version: 0.2.25
+- Archive: peabox-photo-lab-v0.2.25.zip

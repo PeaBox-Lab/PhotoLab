@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.24  
+**Current release:** v0.2.25  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -207,3 +207,9 @@ MIT
 - Smart Export Recommendation with suggested quality and long edge
 - Color Neutrality metric
 - Smart Web and High Res JPEG export presets
+
+
+## v0.2.25 additions
+- Directional Graduated Filter with selectable colour and strength
+- Luminance Balance analysis using mean and median brightness
+- Editorial Web and Archive JPEG export presets
