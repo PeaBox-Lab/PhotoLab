@@ -1,16 +1,12 @@
-# PeaBox Photo Lab v0.2.2
+# PeaBox Photo Lab v0.2.3
 
-Incremental release built on v0.2.1 with all existing functionality retained.
+Built cumulatively from v0.2.2.
 
-## New
-- Export presets for common output workflows:
-  - Web High Quality: WebP, quality 90, 2048 px long edge
-  - Social 1080: JPEG, quality 90, 1080 px long edge
-  - Archive PNG: PNG, original dimensions
-- Custom export remains available.
+## New features
+1. Black & White quick effect.
+2. Negative quick effect.
+3. Custom export dimensions up to 12,000 x 12,000 pixels.
+4. Optional aspect-ratio preservation for custom resizing.
+5. Live output resolution and encoded file-size preview before download.
 
-## Compatibility
-- Python 3.10+
-- Streamlit 1.40 to below 2.0
-- Pillow 11 to below 13
-- NumPy 2 to below 3
+All prior editor, preset, social pack, inspector, privacy and export capabilities are retained.

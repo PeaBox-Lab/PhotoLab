@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.3
+- Added Black & White and Negative quick effects.
+- Added custom export dimensions with optional aspect-ratio preservation.
+- Added live output dimensions and encoded file-size preview.
+- Retained all v0.2.2 features and export presets.
+
+
 ## 0.2.2
 - Added reusable export presets: Web High Quality, Social 1080, and Archive PNG.
 - Retained Custom export mode and all v0.2.1 functionality.

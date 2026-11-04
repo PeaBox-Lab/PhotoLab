@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.2  
+**Current release:** v0.2.3  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -57,3 +57,9 @@ Read `CONTRIBUTING.md`. Report security issues using `SECURITY.md`, not a public
 ## License
 
 MIT
+
+
+## v0.2.3 additions
+- Black & white and negative quick effects
+- Custom export width/height with optional aspect-ratio preservation
+- Live output dimensions and encoded file-size preview

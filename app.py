@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.2</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.3</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -36,6 +36,12 @@ def sketch(im):
     g=np.asarray(ImageOps.grayscale(im)).astype(float); b=np.asarray(ImageOps.invert(Image.fromarray(np.uint8(g))).filter(ImageFilter.GaussianBlur(12))).astype(float)
     return Image.fromarray(np.uint8(np.clip(g*255/(256-b),0,255))).convert('RGB')
 def pixel(im,n): return im.resize((max(1,im.width//n),max(1,im.height//n)),Image.Resampling.BILINEAR).resize(im.size,Image.Resampling.NEAREST)
+def resize_exact(im,w,h,keep=True):
+    if keep:
+        cp=im.copy(); cp.thumbnail((w,h),Image.Resampling.LANCZOS); return cp
+    return im.resize((w,h),Image.Resampling.LANCZOS)
+
+def grayscale(im): return ImageOps.grayscale(im).convert("RGB")
 def preset(im,n):
     if n=='Clean Pop': return ImageEnhance.Color(ImageEnhance.Contrast(im).enhance(1.12)).enhance(1.12)
     if n=='Warm Film': return ImageEnhance.Color(temp(im,30)).enhance(.9)
@@ -73,6 +79,7 @@ with st.sidebar:
     pre=st.selectbox('Quick style',['None','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade'])
     smart=st.toggle('Smart Auto Optimize'); aspect=st.selectbox('Crop for a platform',['Original','1:1','4:5','3:2','16:9','9:16'])
     rot=st.select_slider('Rotate',options=[0,90,180,270]); fh=st.toggle('Mirror'); fv=st.toggle('Flip vertically')
+    bw=st.toggle('Black & white'); neg=st.toggle('Negative')
     with st.expander('Light and colour',True):
         br=st.slider('Brightness',-100,100,0); co=st.slider('Contrast',-100,100,0); sa=st.slider('Saturation',-100,100,0); sharp=st.slider('Sharpness',-100,100,0); te=st.slider('Temperature',-100,100,0); sh=st.slider('Shadows',-100,100,0); hi=st.slider('Highlights',-100,100,0)
     with st.expander('Creative add-ons'):
@@ -144,6 +151,10 @@ st.divider(); st.subheader('3. Export')
 preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG'])
 defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original')}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
+custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
+if custom_size:
+    r1,r2,r3=st.columns(3); out_w=r1.number_input('Width (px)',1,12000,int(edited.width)); out_h=r2.number_input('Height (px)',1,12000,int(edited.height)); keep_ratio=r3.toggle('Keep aspect ratio',value=True)
+    edited=resize_exact(edited,int(out_w),int(out_h),keep_ratio)
 out=im.copy()
 if maxside!='Original' and max(out.size)>int(maxside):
     s=int(maxside)/max(out.size); out=out.resize((int(out.width*s),int(out.height*s)),R)
@@ -152,5 +163,6 @@ if fmt=='JPEG': kw|={'quality':quality,'optimize':True,'progressive':True}
 elif fmt=='WEBP': kw|={'quality':quality,'method':6}
 else: kw|={'optimize':True}
 out.save(buf,**kw); ext={'JPEG':'jpg','PNG':'png','WEBP':'webp'}[fmt]; mime={'JPEG':'image/jpeg','PNG':'image/png','WEBP':'image/webp'}[fmt]
+st.caption(f'Output: {edited.width} x {edited.height} px | Encoded size: {len(buf.getvalue())/1024:.1f} KB')
 st.download_button('Download edited photo',buf.getvalue(),f'{Path(name).stem}.{ext}',mime,type='primary',use_container_width=True)
 st.caption('Keyboard accessibility depends on your browser. Every control has a visible label, and the original is never overwritten.')
