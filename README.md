@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.23  
+**Current release:** v0.2.24  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -200,3 +200,10 @@ MIT
 - Custom Color Wash with selectable colour and intensity
 - Resolution Advisor with megapixel and image-size classification
 - Retina Web and Original Backup presets
+
+
+## v0.2.24 additions
+- Center Light for localized radial brightening/darkening
+- Smart Export Recommendation with suggested quality and long edge
+- Color Neutrality metric
+- Smart Web and High Res JPEG export presets

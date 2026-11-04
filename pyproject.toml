@@ -1,6 +1,6 @@
 [project]
 name = "peabox-photo-lab"
-version = "0.2.23"
+version = "0.2.24"
 description = "A privacy-first, local photo editor built with Streamlit and Pillow."
 requires-python = ">=3.10"
 dependencies = ["streamlit>=1.40,<2.0", "Pillow>=11,<13", "numpy>=2,<3"]

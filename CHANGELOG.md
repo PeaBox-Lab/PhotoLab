@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.24
+- Added Center Light for localized radial brightening or darkening.
+- Added Smart Export Recommendation combining resolution, complexity, and detail activity.
+- Added Color Neutrality metric to export guidance.
+- Added Smart Web and High Res JPEG export presets.
+- Retained all v0.2.23 functionality.
+
+
 ## 0.2.23
 - Added Radial Focus with adjustable center, radius, and blur strength.
 - Added customizable Color Wash.
