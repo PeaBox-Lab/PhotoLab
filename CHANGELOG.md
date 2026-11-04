@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.18
+- Added Defringe / Chromatic Cleanup control.
+- Added Orton Glow creative finishing effect.
+- Added Dynamic Range analysis with tonal-percentile guidance.
+- Added Marketplace and Tiny Web export presets.
+- Retained all v0.2.17 functionality.
+
+
 ## 0.2.17
 - Added Black Point and White Point tone-range controls.
 - Added Auto Temperature Correction.
