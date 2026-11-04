@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.5</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.6</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -47,6 +47,11 @@ def sepia(im,strength=70):
     a=np.stack([g*1.07+12,g*.94+4,g*.76],axis=2)
     toned=Image.fromarray(np.uint8(np.clip(a,0,255)))
     return Image.blend(im,toned,strength/100)
+def posterize(im,bits): return ImageOps.posterize(im,max(1,min(8,int(bits))))
+def solarize(im,threshold): return ImageOps.solarize(im,int(threshold))
+def channel_balance(im,r,g,b):
+    a=np.asarray(im).astype(float); a[...,0]*=r/100; a[...,1]*=g/100; a[...,2]*=b/100
+    return Image.fromarray(np.uint8(np.clip(a,0,255)))
 def image_stats(im):
     a=np.asarray(im).astype(float)
     lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
@@ -91,9 +96,10 @@ with st.sidebar:
     pre=st.selectbox('Quick style',['None','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade','Portrait Soft','Cinematic','High Key'])
     smart=st.toggle('Smart Auto Optimize'); aspect=st.selectbox('Crop for a platform',['Original','1:1','4:5','3:2','16:9','9:16'])
     rot=st.select_slider('Rotate',options=[0,90,180,270]); fh=st.toggle('Mirror'); fv=st.toggle('Flip vertically')
-    bw=st.toggle('Black & white'); neg=st.toggle('Negative'); sep=st.slider('Sepia',0,100,0)
+    bw=st.toggle('Black & white'); neg=st.toggle('Negative'); sep=st.slider('Sepia',0,100,0); poster_bits=st.selectbox('Posterize',['Off',6,5,4,3,2]); solar=st.slider('Solarize',0,255,0,help='0 disables solarize; higher values set the inversion threshold.')
     with st.expander('Light and colour',True):
         br=st.slider('Brightness',-100,100,0); co=st.slider('Contrast',-100,100,0); sa=st.slider('Saturation',-100,100,0); sharp=st.slider('Sharpness',-100,100,0); te=st.slider('Temperature',-100,100,0); sh=st.slider('Shadows',-100,100,0); hi=st.slider('Highlights',-100,100,0); clarity=st.slider('Clarity',0,100,0); denoise=st.slider('Noise reduction',0,5,0)
+        st.caption('RGB channel mixer'); red_mix=st.slider('Red channel',50,150,100); green_mix=st.slider('Green channel',50,150,100); blue_mix=st.slider('Blue channel',50,150,100)
     with st.expander('Creative add-ons'):
         eff=st.selectbox('Effect',['None','Selective Colour Pop','Duotone','Dreamy Glow','Pencil Sketch','Pixel Art','Focus Vignette']); intensity=st.slider('Effect strength',0,100,45); hue=st.slider('Colour-pop hue',0,359,25); hr=st.slider('Hue range',5,90,30); dd=st.color_picker('Duotone shadows','#172554'); dl=st.color_picker('Duotone highlights','#fbbf24'); block=st.slider('Pixel size',3,40,12)
     with st.expander('Brand kit and finishing'):
@@ -117,6 +123,9 @@ if fv: im=ImageOps.flip(im)
 if bw: im=grayscale(im)
 if neg: im=ImageOps.invert(im)
 if sep: im=sepia(im,sep)
+if poster_bits!='Off': im=posterize(im,poster_bits)
+if solar: im=solarize(im,solar)
+im=channel_balance(im,red_mix,green_mix,blue_mix)
 im=preset(im,pre)
 if smart: im=auto(im)
 im=ImageEnhance.Brightness(im).enhance(max(.05,1+br/100)); im=ImageEnhance.Contrast(im).enhance(max(0,1+co/100)); im=ImageEnhance.Color(im).enhance(max(0,1+sa/100)); im=ImageEnhance.Sharpness(im).enhance(max(0,1+sharp/50)); im=temp(im,te); im=tone(im,sh,hi)
@@ -171,8 +180,8 @@ with info_tab:
     if shadows_pct<=20 and highlights_pct<=20: st.success('Exposure distribution looks balanced for general editing.')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096)}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original')}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:
@@ -186,6 +195,6 @@ if fmt=='JPEG': kw|={'quality':quality,'optimize':True,'progressive':True}
 elif fmt=='WEBP': kw|={'quality':quality,'method':6}
 else: kw|={'optimize':True}
 out.save(buf,**kw); ext={'JPEG':'jpg','PNG':'png','WEBP':'webp'}[fmt]; mime={'JPEG':'image/jpeg','PNG':'image/png','WEBP':'image/webp'}[fmt]
-st.caption(f'Output: {out.width} x {out.height} px | Encoded size: {len(buf.getvalue())/1024:.1f} KB')
+st.caption(f'Output: {out.width} x {out.height} px | {out.width*out.height/1_000_000:.2f} MP | Encoded size: {len(buf.getvalue())/1024:.1f} KB')
 st.download_button('Download edited photo',buf.getvalue(),f'{Path(name).stem}.{ext}',mime,type='primary',use_container_width=True)
 st.caption('Keyboard accessibility depends on your browser. Every control has a visible label, and the original is never overwritten.')

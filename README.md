@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.5  
+**Current release:** v0.2.6  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -77,3 +77,10 @@ MIT
 - Adjustable Clarity and Noise Reduction
 - Email Compact and 4K Display export presets
 - Expanded proof sheet with the latest styles
+
+
+## v0.2.6 additions
+- Posterize and Solarize creative effects
+- RGB Channel Mixer with independent 50-150% controls
+- Privacy PNG lossless export preset
+- Megapixel reporting alongside output resolution and encoded size

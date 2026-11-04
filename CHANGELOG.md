@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.6
+- Added Posterize and Solarize creative effects.
+- Added RGB Channel Mixer for independent red, green, and blue balancing.
+- Added Privacy PNG export preset for metadata-free lossless exports.
+- Added megapixel reporting to export preview.
+- Retained all v0.2.5 functionality.
+
+
 ## 0.2.5
 - Added Portrait Soft, Cinematic, and High Key quick styles.
 - Added adjustable Clarity and Noise Reduction tools.

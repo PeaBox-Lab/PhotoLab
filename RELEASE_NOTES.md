@@ -1,15 +1,14 @@
-# PeaBox Photo Lab v0.2.5
+# PeaBox Photo Lab v0.2.6
 
-Cumulative feature release based on v0.2.4.
+Cumulative feature release based on v0.2.5. All previous capabilities are retained.
 
 ## New features
-- Portrait Soft quick style for gentler portrait rendering.
-- Cinematic quick style for cooler, higher-contrast treatment.
-- High Key quick style for brighter, softer-contrast images.
-- Clarity control using adjustable local sharpening.
-- Noise Reduction using median filtering with five selectable levels.
-- Email Compact export preset: JPEG quality 82, 1600 px long edge.
-- 4K Display export preset: JPEG quality 94, 4096 px long edge.
-- Proof sheet expanded to include the new quick styles.
+- Posterize effect with selectable 2-6 bit color depth.
+- Solarize effect with adjustable threshold.
+- RGB Channel Mixer with independent red, green, and blue controls from 50% to 150%.
+- Privacy PNG preset for lossless, newly encoded PNG output without copied EXIF metadata.
+- Export preview now reports megapixels in addition to pixel dimensions and encoded file size.
 
-All v0.2.4 functionality is retained.
+## Release conventions
+- Version: 0.2.6
+- Archive: peabox-photo-lab-v0.2.6.zip
