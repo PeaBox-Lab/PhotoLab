@@ -1,13 +1,14 @@
-# PeaBox Photo Lab v0.2.7
+# PeaBox Photo Lab v0.2.8
 
-Cumulative feature release built from v0.2.6 with all previous capabilities retained.
+Cumulative feature release built from v0.2.7. All earlier editing, inspector, creator, privacy, and export capabilities are retained.
 
 ## New features
-- Matte/Fade control (0-100) for lifted-black creative finishing.
-- Film Grain control (0-100), using deterministic rendering so Streamlit reruns remain visually stable.
-- Split Toning with independently selectable shadow and highlight hues plus effect strength.
-- Photo Print export preset using JPEG quality 96 at original resolution.
+- Lens Vignette with independently adjustable amount and edge softness.
+- Date/Caption Stamp with top-left, top-right, bottom-left, and bottom-right placement.
+- Responsive stamp sizing and a readable translucent-style backdrop.
+- Phone Wallpaper export preset: JPEG quality 92, 2560 px long edge.
+- Square Profile export preset: JPEG quality 92, 1080 px long edge.
 
 ## Release conventions
-- Version: 0.2.7
-- Archive: peabox-photo-lab-v0.2.7.zip
+- Version: 0.2.8
+- Archive: peabox-photo-lab-v0.2.8.zip

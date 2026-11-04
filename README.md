@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.7  
+**Current release:** v0.2.8  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -91,3 +91,9 @@ MIT
 - Adjustable Film Grain
 - Split Toning with shadow and highlight hue controls
 - Photo Print high-quality JPEG export preset
+
+
+## v0.2.8 additions
+- Adjustable Lens Vignette with edge softness control
+- Date or caption stamping in any corner
+- Phone Wallpaper and Square Profile export presets

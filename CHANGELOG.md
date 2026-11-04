@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.8
+- Added adjustable Lens Vignette with softness control.
+- Added Date/Caption Stamp with four corner positions.
+- Added Phone Wallpaper and Square Profile export presets.
+- Retained all v0.2.7 functionality.
+
+
 ## 0.2.7
 - Added Matte/Fade finishing control.
 - Added deterministic Film Grain control.
