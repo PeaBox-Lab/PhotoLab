@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.10  
+**Current release:** v0.2.11  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -111,3 +111,10 @@ MIT
 - Adaptive Vibrance for stronger low-saturation color enhancement
 - Edge Sharpen for additional structural crispness
 - Portfolio and Low Bandwidth WebP presets
+
+
+## v0.2.11 additions
+- Gamma control from 0.50 to 2.00
+- Green-to-magenta Tint correction
+- Auto Levels with adjustable 0-10% cutoff
+- Presentation HD and Presentation 4K export presets

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.11
+- Added Gamma adjustment.
+- Added green-to-magenta Tint correction.
+- Added Auto Levels with configurable clipping cutoff.
+- Added Presentation HD and Presentation 4K export presets.
+- Retained all v0.2.10 functionality.
+
+
 ## 0.2.10
 - Added Exposure control from -2 EV to +2 EV.
 - Added adaptive Vibrance control.

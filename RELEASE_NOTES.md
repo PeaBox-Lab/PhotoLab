@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.10
+# PeaBox Photo Lab v0.2.11
 
-Cumulative feature release built from v0.2.9, retaining all previous capabilities.
+Cumulative feature release built from v0.2.10 with all previous features retained.
 
 ## New features
-- Exposure adjustment: -2.0 EV to +2.0 EV in 0.1 EV steps.
-- Adaptive Vibrance: preferentially boosts less-saturated colors.
-- Edge Sharpen: adjustable structural edge enhancement.
-- Portfolio preset: WebP quality 94, 2560 px long edge.
-- Low Bandwidth preset: WebP quality 72, 1600 px long edge.
+- Gamma adjustment from 0.50 to 2.00 for midtone control.
+- Tint correction from green to magenta.
+- Auto Levels using automatic contrast normalization with configurable clipping cutoff.
+- Presentation HD preset: JPEG quality 92, 2048 px long edge.
+- Presentation 4K preset: JPEG quality 94, 4096 px long edge.
 
 ## Release conventions
-- Version: 0.2.10
-- Archive: peabox-photo-lab-v0.2.10.zip
+- Version: 0.2.11
+- Archive: peabox-photo-lab-v0.2.11.zip
