@@ -1,6 +1,13 @@
 # Changelog
 
-## 2.0.0
+## 0.2.1
+- Normalized project versioning to semantic three-part format `99.99.99`.
+- Standardized release archive naming as `peabox-photo-lab-v<version>.zip`.
+- Retained the complete existing photo editing, creator toolkit, image inspector, privacy, and export feature set.
+- Updated application and package metadata for this release.
+
+
+## Earlier source baseline (2.0.0)
 
 - Added social format ZIP export
 - Added style proof sheets
