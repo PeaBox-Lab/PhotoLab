@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.17
+- Added Black Point and White Point tone-range controls.
+- Added Auto Temperature Correction.
+- Added Focus Analysis with edge-focus guidance in Image Inspector.
+- Added Desktop Wallpaper and Fast Preview export presets.
+- Retained all v0.2.16 functionality.
+
+
 ## 0.2.16
 - Added Monochrome Channel Mixer with independent RGB weighting.
 - Added Highlights, Midtones, and Shadows luminance-mask preview overlays.

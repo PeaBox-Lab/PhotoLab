@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.16  
+**Current release:** v0.2.17  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -153,3 +153,10 @@ MIT
 - Luminance-mask preview for highlights, midtones, and shadows
 - Adjustable mask overlay opacity
 - Contact Sheet Web and Lossless Master export presets
+
+
+## v0.2.17 additions
+- Black Point and White Point tone-range controls
+- Auto Temperature Correction
+- Focus Analysis with editing guidance
+- Desktop Wallpaper and Fast Preview export presets
