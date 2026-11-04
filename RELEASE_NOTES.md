@@ -1,14 +1,13 @@
-# PeaBox Photo Lab v0.2.6
+# PeaBox Photo Lab v0.2.7
 
-Cumulative feature release based on v0.2.5. All previous capabilities are retained.
+Cumulative feature release built from v0.2.6 with all previous capabilities retained.
 
 ## New features
-- Posterize effect with selectable 2-6 bit color depth.
-- Solarize effect with adjustable threshold.
-- RGB Channel Mixer with independent red, green, and blue controls from 50% to 150%.
-- Privacy PNG preset for lossless, newly encoded PNG output without copied EXIF metadata.
-- Export preview now reports megapixels in addition to pixel dimensions and encoded file size.
+- Matte/Fade control (0-100) for lifted-black creative finishing.
+- Film Grain control (0-100), using deterministic rendering so Streamlit reruns remain visually stable.
+- Split Toning with independently selectable shadow and highlight hues plus effect strength.
+- Photo Print export preset using JPEG quality 96 at original resolution.
 
 ## Release conventions
-- Version: 0.2.6
-- Archive: peabox-photo-lab-v0.2.6.zip
+- Version: 0.2.7
+- Archive: peabox-photo-lab-v0.2.7.zip

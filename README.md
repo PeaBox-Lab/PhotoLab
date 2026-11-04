@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.6  
+**Current release:** v0.2.7  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -84,3 +84,10 @@ MIT
 - RGB Channel Mixer with independent 50-150% controls
 - Privacy PNG lossless export preset
 - Megapixel reporting alongside output resolution and encoded size
+
+
+## v0.2.7 additions
+- Matte/Fade creative finishing control
+- Adjustable Film Grain
+- Split Toning with shadow and highlight hue controls
+- Photo Print high-quality JPEG export preset

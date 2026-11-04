@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.7
+- Added Matte/Fade finishing control.
+- Added deterministic Film Grain control.
+- Added Split Toning with independent shadow/highlight hues and strength.
+- Added Photo Print JPEG export preset.
+- Retained all v0.2.6 functionality.
+
+
 ## 0.2.6
 - Added Posterize and Solarize creative effects.
 - Added RGB Channel Mixer for independent red, green, and blue balancing.
