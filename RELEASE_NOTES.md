@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.12
+# PeaBox Photo Lab v0.2.13
 
-Cumulative feature release built from v0.2.11. All previous capabilities are retained.
+Cumulative feature release built from v0.2.12 with all previous features retained.
 
 ## New features
-- Auto White Balance (0-100) using a Gray World channel-balancing method.
-- Micro Contrast (0-100) for controlled local contrast enhancement.
-- Highlight Fade (0-100) for softer, film-like bright regions.
-- Blog Optimized export: WebP quality 88, 2048 px long edge.
-- Master JPEG export: JPEG quality 98 at original resolution.
+- Dehaze (0-100) for haze reduction and stronger tonal separation.
+- Bloom / Glow (0-100) for a soft luminous finishing effect.
+- Color Cast Analysis in Image Inspector with per-channel mean values, channel spread, and correction guidance.
+- Gallery WebP preset: WebP quality 92, 2048 px long edge.
+- Quick Share preset: JPEG quality 80, 1080 px long edge.
 
 ## Release conventions
-- Version: 0.2.12
-- Archive: peabox-photo-lab-v0.2.12.zip
+- Version: 0.2.13
+- Archive: peabox-photo-lab-v0.2.13.zip

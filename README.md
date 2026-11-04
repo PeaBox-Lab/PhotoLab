@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.12  
+**Current release:** v0.2.13  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -125,3 +125,10 @@ MIT
 - Micro Contrast for local texture and dimensionality
 - Highlight Fade for softer bright tones
 - Blog Optimized WebP and Master JPEG export presets
+
+
+## v0.2.13 additions
+- Dehaze for improved clarity in hazy or washed-out photos
+- Bloom/Glow for soft luminous highlights
+- Color Cast Analysis with RGB means and channel-spread guidance
+- Gallery WebP and Quick Share export presets

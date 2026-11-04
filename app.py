@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.12</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.13</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -130,6 +130,18 @@ def micro_contrast(im,amount):
     if amount<=0:return im
     blur=np.asarray(im.filter(ImageFilter.GaussianBlur(4))).astype(float); a=np.asarray(im).astype(float); k=amount/100*.7
     return Image.fromarray(np.uint8(np.clip(a+(a-blur)*k,0,255)))
+def dehaze(im,amount):
+    if amount<=0: return im
+    a=np.asarray(im).astype(float); dark=a.min(2,keepdims=True); haze=np.percentile(dark,85); k=amount/100*.45
+    out=(a-haze*k)/max(.35,1-k)
+    return Image.fromarray(np.uint8(np.clip(out,0,255)))
+def bloom(im,amount):
+    if amount<=0: return im
+    bright=ImageEnhance.Brightness(im).enhance(1.12).filter(ImageFilter.GaussianBlur(max(2,amount/16)))
+    return Image.blend(im,bright,min(.35,amount/300))
+def color_cast_score(im):
+    a=np.asarray(im).astype(float).reshape(-1,3).mean(0); spread=float(a.max()-a.min())
+    return a,spread
 def image_stats(im):
     a=np.asarray(im).astype(float)
     lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
@@ -182,7 +194,7 @@ with st.sidebar:
         st.caption('Lens finishing'); lens_vig=st.slider('Lens vignette',0,100,0); lens_soft=st.slider('Vignette softness',10,100,60); soft_amt=st.slider('Soft focus',0,100,0); detail_amt=st.slider('Fine detail',0,100,0)
         st.caption('Pro adjustments'); exposure=st.slider('Exposure (EV)',-2.0,2.0,0.0,0.1); vibrance=st.slider('Vibrance',0,100,0); edge_amt=st.slider('Edge sharpen',0,100,0)
         gamma=st.slider('Gamma',0.5,2.0,1.0,0.05); tint=st.slider('Tint (green to magenta)',-100,100,0); auto_levels_on=st.toggle('Auto Levels'); auto_cutoff=st.slider('Auto Levels cutoff',0,10,1)
-        wb_strength=st.slider('Auto white balance',0,100,0); micro_amt=st.slider('Micro contrast',0,100,0); fade_hi=st.slider('Highlight fade',0,100,0)
+        wb_strength=st.slider('Auto white balance',0,100,0); micro_amt=st.slider('Micro contrast',0,100,0); fade_hi=st.slider('Highlight fade',0,100,0); dehaze_amt=st.slider('Dehaze',0,100,0); bloom_amt=st.slider('Bloom / glow',0,100,0)
         st.caption('Date / caption stamp'); stamp_text=st.text_input('Stamp text',placeholder='2026-11-05 or a short caption'); stamp_pos=st.selectbox('Stamp position',['Bottom right','Bottom left','Top right','Top left'])
     with st.expander('Creative add-ons'):
         eff=st.selectbox('Effect',['None','Selective Colour Pop','Duotone','Dreamy Glow','Pencil Sketch','Pixel Art','Focus Vignette']); intensity=st.slider('Effect strength',0,100,45); hue=st.slider('Colour-pop hue',0,359,25); hr=st.slider('Hue range',5,90,30); dd=st.color_picker('Duotone shadows','#172554'); dl=st.color_picker('Duotone highlights','#fbbf24'); block=st.slider('Pixel size',3,40,12)
@@ -225,6 +237,8 @@ if auto_levels_on: im=auto_levels(im,auto_cutoff)
 im=white_balance_gray_world(im,wb_strength)
 im=micro_contrast(im,micro_amt)
 im=fade_highlights(im,fade_hi)
+im=dehaze(im,dehaze_amt)
+im=bloom(im,bloom_amt)
 im=add_date_stamp(im,stamp_text,stamp_pos)
 im=preset(im,pre)
 if smart: im=auto(im)
@@ -278,10 +292,15 @@ with info_tab:
     if shadows_pct>20: st.warning('A large portion of the image is near black. Consider raising Shadows.')
     if highlights_pct>20: st.warning('A large portion of the image is very bright. Consider lowering Highlights.')
     if shadows_pct<=20 and highlights_pct<=20: st.success('Exposure distribution looks balanced for general editing.')
+    st.subheader('Color cast analysis')
+    channel_means,cast_spread=color_cast_score(im)
+    c1,c2,c3,c4=st.columns(4); c1.metric('Red mean',f'{channel_means[0]:.0f}'); c2.metric('Green mean',f'{channel_means[1]:.0f}'); c3.metric('Blue mean',f'{channel_means[2]:.0f}'); c4.metric('Channel spread',f'{cast_spread:.1f}')
+    if cast_spread>35: st.info('Noticeable channel imbalance detected. Try Auto White Balance or Temperature/Tint correction.')
+    else: st.success('No strong global color cast detected.')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original')}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080)}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:

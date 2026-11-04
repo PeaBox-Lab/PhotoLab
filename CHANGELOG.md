@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.13
+- Added Dehaze control for hazy/low-contrast images.
+- Added Bloom/Glow creative finishing control.
+- Added Color Cast Analysis to Image Inspector.
+- Added Gallery WebP and Quick Share export presets.
+- Retained all v0.2.12 functionality.
+
+
 ## 0.2.12
 - Added adjustable Gray World Auto White Balance.
 - Added Micro Contrast for local texture definition.
