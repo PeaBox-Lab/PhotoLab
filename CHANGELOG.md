@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.15
+- Added Chromatic Pop for saturation-aware color enhancement.
+- Added Soft Skin diffusion control.
+- Added optional Composition Safe Area overlay for previewing edge margins without altering exports.
+- Added Mobile WebP and Client Review export presets.
+- Retained all v0.2.14 functionality.
+
+
 ## 0.2.14
 - Added Texture Clarity for broader local contrast enhancement.
 - Added independent Shadow Color and Highlight Color grading controls.

@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.14  
+**Current release:** v0.2.15  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -139,3 +139,10 @@ MIT
 - Independent shadow-color hue/strength grading
 - Independent highlight-color hue/strength grading
 - Social High Quality and Proof JPEG export presets
+
+
+## v0.2.15 additions
+- Chromatic Pop for saturation-aware color enhancement
+- Soft Skin diffusion control
+- Composition Safe Area preview overlay with adjustable margins
+- Mobile WebP and Client Review export presets

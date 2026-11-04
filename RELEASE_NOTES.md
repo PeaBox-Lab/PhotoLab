@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.14
+# PeaBox Photo Lab v0.2.15
 
-Cumulative feature release built from v0.2.13 with prior capabilities retained.
+Cumulative feature release built from v0.2.14 with prior capabilities retained.
 
 ## New features
-- Texture Clarity, adjustable 0-100, for broader local contrast enhancement.
-- Shadow Color grading with independently adjustable hue and strength.
-- Highlight Color grading with independently adjustable hue and strength.
-- Social High Quality preset: JPEG quality 94, 2048 px long edge.
-- Proof JPEG preset: JPEG quality 75, 1600 px long edge.
+- Chromatic Pop (0-100) targets already-colorful regions for stronger color separation.
+- Soft Skin (0-100) provides controlled diffusion for portraits.
+- Composition Safe Area overlay displays adjustable 2-15% edge margins in preview only, leaving exports untouched.
+- Mobile WebP preset: WebP quality 84, 1600 px long edge.
+- Client Review preset: JPEG quality 88, 2048 px long edge.
 
 ## Release conventions
-- Version: 0.2.14
-- Archive: peabox-photo-lab-v0.2.14.zip
+- Version: 0.2.15
+- Archive: peabox-photo-lab-v0.2.15.zip
