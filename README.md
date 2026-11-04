@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.9  
+**Current release:** v0.2.10  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -104,3 +104,10 @@ MIT
 - Fine Detail enhancement for texture definition
 - Messaging JPEG and Web Thumbnail WebP export presets
 - Richer export summary including format and quality status
+
+
+## v0.2.10 additions
+- Exposure adjustment from -2.0 EV to +2.0 EV
+- Adaptive Vibrance for stronger low-saturation color enhancement
+- Edge Sharpen for additional structural crispness
+- Portfolio and Low Bandwidth WebP presets

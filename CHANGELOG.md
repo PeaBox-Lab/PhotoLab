@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.10
+- Added Exposure control from -2 EV to +2 EV.
+- Added adaptive Vibrance control.
+- Added Edge Sharpen control.
+- Added Portfolio and Low Bandwidth WebP export presets.
+- Retained all v0.2.9 functionality.
+
+
 ## 0.2.9
 - Added Soft Focus finishing control.
 - Added Fine Detail enhancement control.
