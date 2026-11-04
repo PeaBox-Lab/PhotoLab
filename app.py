@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.4</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.5</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -57,6 +57,9 @@ def preset(im,n):
     if n=='Cool Editorial': return ImageEnhance.Contrast(temp(im,-25)).enhance(1.1)
     if n=='Mono Punch': return ImageEnhance.Contrast(ImageOps.grayscale(im)).enhance(1.35).convert('RGB')
     if n=='Vintage Fade': return ImageEnhance.Color(ImageEnhance.Contrast(temp(im,15)).enhance(.82)).enhance(.78)
+    if n=='Portrait Soft': return ImageEnhance.Color(im.filter(ImageFilter.GaussianBlur(.35))).enhance(1.04)
+    if n=='Cinematic': return ImageEnhance.Contrast(temp(im,-10)).enhance(1.18)
+    if n=='High Key': return ImageEnhance.Contrast(ImageEnhance.Brightness(im).enhance(1.12)).enhance(.92)
     return im
 def watermark(im,text,pos,opacity):
     if not text.strip(): return im
@@ -85,12 +88,12 @@ with st.sidebar:
     st.header('1. Choose a photo'); up=st.file_uploader('JPG, PNG or WebP',type=['jpg','jpeg','png','webp'])
     if not up: st.caption('Tip: use a high-resolution original for the best export.')
     st.header('2. Edit')
-    pre=st.selectbox('Quick style',['None','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade'])
+    pre=st.selectbox('Quick style',['None','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade','Portrait Soft','Cinematic','High Key'])
     smart=st.toggle('Smart Auto Optimize'); aspect=st.selectbox('Crop for a platform',['Original','1:1','4:5','3:2','16:9','9:16'])
     rot=st.select_slider('Rotate',options=[0,90,180,270]); fh=st.toggle('Mirror'); fv=st.toggle('Flip vertically')
     bw=st.toggle('Black & white'); neg=st.toggle('Negative'); sep=st.slider('Sepia',0,100,0)
     with st.expander('Light and colour',True):
-        br=st.slider('Brightness',-100,100,0); co=st.slider('Contrast',-100,100,0); sa=st.slider('Saturation',-100,100,0); sharp=st.slider('Sharpness',-100,100,0); te=st.slider('Temperature',-100,100,0); sh=st.slider('Shadows',-100,100,0); hi=st.slider('Highlights',-100,100,0)
+        br=st.slider('Brightness',-100,100,0); co=st.slider('Contrast',-100,100,0); sa=st.slider('Saturation',-100,100,0); sharp=st.slider('Sharpness',-100,100,0); te=st.slider('Temperature',-100,100,0); sh=st.slider('Shadows',-100,100,0); hi=st.slider('Highlights',-100,100,0); clarity=st.slider('Clarity',0,100,0); denoise=st.slider('Noise reduction',0,5,0)
     with st.expander('Creative add-ons'):
         eff=st.selectbox('Effect',['None','Selective Colour Pop','Duotone','Dreamy Glow','Pencil Sketch','Pixel Art','Focus Vignette']); intensity=st.slider('Effect strength',0,100,45); hue=st.slider('Colour-pop hue',0,359,25); hr=st.slider('Hue range',5,90,30); dd=st.color_picker('Duotone shadows','#172554'); dl=st.color_picker('Duotone highlights','#fbbf24'); block=st.slider('Pixel size',3,40,12)
     with st.expander('Brand kit and finishing'):
@@ -117,6 +120,8 @@ if sep: im=sepia(im,sep)
 im=preset(im,pre)
 if smart: im=auto(im)
 im=ImageEnhance.Brightness(im).enhance(max(.05,1+br/100)); im=ImageEnhance.Contrast(im).enhance(max(0,1+co/100)); im=ImageEnhance.Color(im).enhance(max(0,1+sa/100)); im=ImageEnhance.Sharpness(im).enhance(max(0,1+sharp/50)); im=temp(im,te); im=tone(im,sh,hi)
+if denoise: im=im.filter(ImageFilter.MedianFilter(size=denoise*2+1))
+if clarity: im=im.filter(ImageFilter.UnsharpMask(radius=2,percent=60+clarity*2,threshold=3))
 if eff=='Selective Colour Pop': im=selective(im,hue,hr)
 elif eff=='Duotone': im=Image.blend(im,ImageOps.colorize(ImageOps.grayscale(im),dd,dl),intensity/100)
 elif eff=='Dreamy Glow': im=Image.blend(im,ImageChops.screen(im,im.filter(ImageFilter.GaussianBlur(max(2,min(im.size)//120)))),intensity/100)
@@ -139,7 +144,7 @@ with creator_tab:
     for c,hx in zip(blocks,cols): c.color_picker(hx,hx,disabled=True)
     st.code(json.dumps({'palette':cols},indent=2),language='json')
     st.subheader('Preset proof sheet')
-    names=['Original','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade']; proof=contact_sheet([original]+[preset(original,n) for n in names[1:]],names)
+    names=['Original','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade','Portrait Soft','Cinematic','High Key']; proof=contact_sheet([original]+[preset(original,n) for n in names[1:]],names)
     st.image(proof,use_container_width=True)
     pb=io.BytesIO(); proof.save(pb,'JPEG',quality=90); st.download_button('Download style proof sheet',pb.getvalue(),'peabox-style-proof.jpg','image/jpeg')
     st.subheader('Social format pack')
@@ -166,8 +171,8 @@ with info_tab:
     if shadows_pct<=20 and highlights_pct<=20: st.success('Exposure distribution looks balanced for general editing.')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original')}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096)}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:

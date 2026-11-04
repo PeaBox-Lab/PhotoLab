@@ -1,15 +1,15 @@
-# PeaBox Photo Lab v0.2.4
+# PeaBox Photo Lab v0.2.5
 
-Cumulative release built from v0.2.3 with all existing capabilities retained.
+Cumulative feature release based on v0.2.4.
 
 ## New features
-- Adjustable Sepia effect (0-100).
-- Exposure Analysis: mean luminance, contrast spread, deep-shadow percentage, and bright-highlight percentage.
-- Contextual exposure guidance in Image Inspector.
+- Portrait Soft quick style for gentler portrait rendering.
+- Cinematic quick style for cooler, higher-contrast treatment.
+- High Key quick style for brighter, softer-contrast images.
+- Clarity control using adjustable local sharpening.
+- Noise Reduction using median filtering with five selectable levels.
+- Email Compact export preset: JPEG quality 82, 1600 px long edge.
+- 4K Display export preset: JPEG quality 94, 4096 px long edge.
+- Proof sheet expanded to include the new quick styles.
 
-## Fixes
-- Fixed custom export dimensions so resizing is applied to the active edited image and export metrics report the actual saved output.
-
-## Release conventions
-- Version: 0.2.4
-- Archive: peabox-photo-lab-v0.2.4.zip
+All v0.2.4 functionality is retained.

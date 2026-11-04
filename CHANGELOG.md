@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.5
+- Added Portrait Soft, Cinematic, and High Key quick styles.
+- Added adjustable Clarity and Noise Reduction tools.
+- Added Email Compact and 4K Display export presets.
+- Expanded the preset proof sheet to include all new styles.
+- Retained all v0.2.4 functionality.
+
+
 ## 0.2.4
 - Added adjustable Sepia effect.
 - Added Exposure Analysis with luminance, contrast, deep-shadow, and bright-highlight metrics.

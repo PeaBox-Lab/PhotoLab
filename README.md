@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.4  
+**Current release:** v0.2.5  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -70,3 +70,10 @@ MIT
 - Exposure Analysis in Image Inspector
 - Automatic warnings for excessive deep shadows or bright highlights
 - Corrected custom-dimension export flow
+
+
+## v0.2.5 additions
+- Portrait Soft, Cinematic, and High Key styles
+- Adjustable Clarity and Noise Reduction
+- Email Compact and 4K Display export presets
+- Expanded proof sheet with the latest styles
