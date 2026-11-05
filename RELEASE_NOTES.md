@@ -1,14 +1,19 @@
-# PeaBox Photo Lab v0.2.28
+# PeaBox Photo Lab v0.2.29
 
-Cumulative feature release built from v0.2.27 with all previous functionality retained.
+A quality-focused release built from v0.2.28. No existing editing capability is intentionally removed.
 
-## New features
-- Corner Tint: selectable colour with adjustable 0-100 radial corner strength.
-- Diagonal Composition Guide: preview-only crossing diagonals for composition review; never alters exports.
-- Subject Emphasis analysis compares center luminance against the overall frame and suggests Center Light, Dodge/Burn, or Edge Fade when separation is subtle.
-- Profile Master preset: JPEG quality 95, 2048 px long edge.
-- Web Standard preset: WebP quality 89, 2048 px long edge.
+## Reliability and architecture
+- Extracted the UI-independent image-processing engine to `peabox_core.py`.
+- Reduced `app.py` from approximately 574 lines to a smaller UI/orchestration layer.
+- Added automated tests covering representative core filters, resizing/cropping, image analysis, JPEG/PNG/WebP export, extreme dimensions, and non-destructive behavior.
+- Added `validate_release.py` for version alignment, source compilation, and required-file validation.
+- Added a GitHub Actions quality workflow.
+- Added `requirements-dev.txt` with pytest and Ruff ranges.
+
+## UX quality
+- Consolidated the long export preset selector into logical groups: Recommended, Web, Social & sharing, Professional, Print & archive, and All presets.
+- The complete v0.2.28 preset inventory remains accessible through All presets.
 
 ## Release conventions
-- Version: 0.2.28
-- Archive: peabox-photo-lab-v0.2.28.zip
+- Version: 0.2.29
+- Archive: peabox-photo-lab-v0.2.29.zip

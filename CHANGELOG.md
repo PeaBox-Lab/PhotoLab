@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.2.29 - Quality release
+- Split the image-processing engine into `peabox_core.py`, reducing UI/core coupling.
+- Added automated pytest smoke, regression, extreme-dimension, immutability, analysis-contract, and export-format tests.
+- Added `validate_release.py` release gate and GitHub Actions quality workflow.
+- Added development dependency profile for pytest and Ruff.
+- Consolidated the export preset UX into Recommended, Web, Social & sharing, Professional, Print & archive, and All presets groups while preserving every existing preset.
+- Retained all v0.2.28 editing, creator, inspector, preview, privacy, and export functionality.
+
+
 ## 0.2.28
 - Added customizable Corner Tint.
 - Added preview-only Diagonal Composition Guide.

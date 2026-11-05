@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.28  
+**Current release:** v0.2.29  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -234,3 +234,18 @@ MIT
 - Preview-only Diagonal Composition Guide
 - Subject Emphasis analysis with editing recommendations
 - Profile Master and Web Standard export presets
+
+
+## v0.2.29 quality architecture
+- UI and image-processing core separated into `app.py` and `peabox_core.py`.
+- Automated pytest coverage for core transforms, regressions, edge dimensions, analysis contracts, and JPEG/PNG/WebP encoding.
+- `validate_release.py` provides a repeatable local release gate.
+- GitHub Actions quality workflow runs validation and tests on push and pull request.
+- Export presets are grouped for easier navigation; the All presets group preserves the complete legacy preset inventory.
+
+### Quality checks
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+python validate_release.py
+pytest
+```
