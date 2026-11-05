@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.27  
+**Current release:** v0.2.28  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -227,3 +227,10 @@ MIT
 - Preview-only Horizon Guide
 - Common Aspect Ratio Advisor
 - Cinematic Web and Social Master export presets
+
+
+## v0.2.28 additions
+- Custom Corner Tint
+- Preview-only Diagonal Composition Guide
+- Subject Emphasis analysis with editing recommendations
+- Profile Master and Web Standard export presets

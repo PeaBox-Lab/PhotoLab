@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.28
+- Added customizable Corner Tint.
+- Added preview-only Diagonal Composition Guide.
+- Added Subject Emphasis analysis based on center-versus-frame luminance contrast.
+- Added Profile Master and Web Standard export presets.
+- Retained all v0.2.27 functionality.
+
+
 ## 0.2.27
 - Added two-colour Gradient Toning.
 - Added preview-only Horizon Guide.

@@ -1,14 +1,14 @@
-# PeaBox Photo Lab v0.2.27
+# PeaBox Photo Lab v0.2.28
 
-Cumulative feature release built from v0.2.26 with all previous functionality retained.
+Cumulative feature release built from v0.2.27 with all previous functionality retained.
 
 ## New features
-- Gradient Toning: selectable left and right colours with adjustable 0-100 blend strength.
-- Horizon Guide: preview-only horizontal center guide that never alters exports.
-- Aspect Ratio Advisor: compares the edited image to 1:1, 4:5, 3:2, and 16:9 and reports the nearest common ratio.
-- Cinematic Web preset: WebP quality 94, 2560 px long edge.
-- Social Master preset: JPEG quality 96, 2560 px long edge.
+- Corner Tint: selectable colour with adjustable 0-100 radial corner strength.
+- Diagonal Composition Guide: preview-only crossing diagonals for composition review; never alters exports.
+- Subject Emphasis analysis compares center luminance against the overall frame and suggests Center Light, Dodge/Burn, or Edge Fade when separation is subtle.
+- Profile Master preset: JPEG quality 95, 2048 px long edge.
+- Web Standard preset: WebP quality 89, 2048 px long edge.
 
 ## Release conventions
-- Version: 0.2.27
-- Archive: peabox-photo-lab-v0.2.27.zip
+- Version: 0.2.28
+- Archive: peabox-photo-lab-v0.2.28.zip
