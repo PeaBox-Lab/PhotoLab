@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.27
+- Added two-colour Gradient Toning.
+- Added preview-only Horizon Guide.
+- Added common Aspect Ratio Advisor.
+- Added Cinematic Web and Social Master export presets.
+- Retained all v0.2.26 functionality.
+
+
 ## 0.2.26
 - Added customizable Edge Fade.
 - Added preview-only Rule-of-Thirds composition grid.

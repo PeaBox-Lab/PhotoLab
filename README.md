@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.26  
+**Current release:** v0.2.27  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -220,3 +220,10 @@ MIT
 - Preview-only Rule-of-Thirds grid
 - Composition Advisor with orientation-specific guidance
 - Story Portrait and Slide Ready export presets
+
+
+## v0.2.27 additions
+- Two-colour horizontal Gradient Toning
+- Preview-only Horizon Guide
+- Common Aspect Ratio Advisor
+- Cinematic Web and Social Master export presets

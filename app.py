@@ -5,7 +5,7 @@ import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.26</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.27</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 def rgb(im): return ImageOps.exif_transpose(im).convert("RGB")
@@ -293,6 +293,16 @@ def orientation_advice(im):
     if ratio>1.35:return 'Landscape','Ideal for banners, desktop wallpapers, and presentation slides.'
     if ratio<.8:return 'Portrait','Ideal for stories, phone wallpapers, and portrait posts.'
     return 'Balanced','Well suited to square/social crops and general-purpose exports.'
+def horizontal_gradient(im,left,right,strength):
+    if strength<=0:return im
+    a=np.asarray(im).astype(float); h,w=a.shape[:2]; lc=np.array(tuple(int(left[i:i+2],16) for i in (1,3,5)),float); rc=np.array(tuple(int(right[i:i+2],16) for i in (1,3,5)),float)
+    t=np.linspace(0,1,w)[None,:,None]; layer=lc*(1-t)+rc*t; layer=np.tile(layer,(h,1,1)); k=strength/100*.28
+    return Image.fromarray(np.uint8(np.clip(a*(1-k)+layer*k,0,255)))
+def horizon_overlay(im):
+    out=im.copy(); d=ImageDraw.Draw(out); y=out.height//2; width=max(2,min(out.size)//350); d.line((0,y,out.width,y),fill=(0,220,255),width=width)
+    return out
+def aspect_advisor(im):
+    r=im.width/im.height; options={'1:1':1,'4:5':.8,'3:2':1.5,'16:9':16/9}; name,val=min(options.items(),key=lambda kv:abs(kv[1]-r)); return name,abs(r-val)
 def image_stats(im):
     a=np.asarray(im).astype(float)
     lum=.2126*a[...,0]+.7152*a[...,1]+.0722*a[...,2]
@@ -359,6 +369,7 @@ with st.sidebar:
         st.caption('Center light'); center_light_strength=st.slider('Center light strength',-100,100,0); center_light_x=st.slider('Center light X %',0,100,50); center_light_y=st.slider('Center light Y %',0,100,50); center_light_radius=st.slider('Center light radius %',5,60,30)
         st.caption('Graduated filter'); grad_amount=st.slider('Graduated filter strength',0,100,0); grad_direction=st.selectbox('Graduated filter direction',['Top','Bottom','Left','Right']); grad_color=st.color_picker('Graduated filter color','#6C8EBF')
         st.caption('Edge fade'); edge_fade_amount=st.slider('Edge fade strength',0,100,0); edge_fade_color=st.color_picker('Edge fade color','#000000')
+        st.caption('Gradient toning'); gradient_strength=st.slider('Gradient toning strength',0,100,0); gradient_left=st.color_picker('Gradient left color','#355C7D'); gradient_right=st.color_picker('Gradient right color','#F8B195')
         st.caption('Frame'); frame_size=st.slider('Frame size %',0,10,0); frame_color=st.color_picker('Frame color','#FFFFFF')
         st.caption('Date / caption stamp'); stamp_text=st.text_input('Stamp text',placeholder='2026-11-05 or a short caption'); stamp_pos=st.selectbox('Stamp position',['Bottom right','Bottom left','Top right','Top left'])
     with st.expander('Creative add-ons'):
@@ -424,6 +435,7 @@ im=color_wash(im,wash_color,wash_strength)
 im=center_light(im,center_light_x,center_light_y,center_light_radius,center_light_strength)
 im=graduated_filter(im,grad_amount,grad_direction,grad_color)
 im=edge_fade(im,edge_fade_amount,edge_fade_color)
+im=horizontal_gradient(im,gradient_left,gradient_right,gradient_strength)
 im=border_frame(im,frame_size,frame_color)
 im=add_date_stamp(im,stamp_text,stamp_pos)
 im=preset(im,pre)
@@ -446,6 +458,7 @@ with edit_tab:
     mask_mode=st.selectbox('Luminance mask preview',['Off','Highlights','Midtones','Shadows']); mask_opacity=st.slider('Mask overlay opacity',10,100,55) if mask_mode!='Off' else 55
     after_preview=luminance_mask_preview(im,mask_mode,mask_opacity) if mask_mode!='Off' else im
     show_thirds=st.toggle('Show rule-of-thirds grid'); after_preview=thirds_overlay(after_preview) if show_thirds else after_preview
+    show_horizon=st.toggle('Show horizon guide'); after_preview=horizon_overlay(after_preview) if show_horizon else after_preview
     if show:
         a,b=st.columns(2); a.subheader('Before'); a.image(original,use_container_width=True); b.subheader('After'); b.image(after_preview,use_container_width=True)
     else: st.image(after_preview,use_container_width=True)
@@ -522,10 +535,11 @@ with info_tab:
     else: st.success('Mean and median luminance are reasonably aligned.')
     st.subheader('Composition advisor')
     orientation,orientation_tip=orientation_advice(im); st.metric('Current orientation',orientation); st.caption(orientation_tip)
+    nearest_aspect,aspect_error=aspect_advisor(im); a1,a2=st.columns(2); a1.metric('Nearest common ratio',nearest_aspect); a2.metric('Ratio deviation',f'{aspect_error:.3f}')
 
 st.divider(); st.subheader('3. Export')
-preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master','Desktop Wallpaper','Fast Preview','Marketplace','Tiny Web','Portfolio Master','Chat Optimized','Email Small','Web Hero','Detailed Web','Draft Proof','Print Proof','Ultra Web','Retina Web','Original Backup','Smart Web','High Res JPEG','Editorial Web','Archive JPEG','Story Portrait','Slide Ready'])
-defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original'),'Desktop Wallpaper':('JPEG',93,4096),'Fast Preview':('WEBP',76,1080),'Marketplace':('JPEG',90,2048),'Tiny Web':('WEBP',68,1080),'Portfolio Master':('JPEG',97,4096),'Chat Optimized':('WEBP',78,1600),'Email Small':('JPEG',76,1080),'Web Hero':('WEBP',91,2560),'Detailed Web':('WEBP',95,2560),'Draft Proof':('JPEG',70,1600),'Print Proof':('JPEG',95,4096),'Ultra Web':('WEBP',96,4096),'Retina Web':('WEBP',93,4096),'Original Backup':('PNG',100,'Original'),'Smart Web':('WEBP',90,2560),'High Res JPEG':('JPEG',96,4096),'Editorial Web':('WEBP',92,2560),'Archive JPEG':('JPEG',99,'Original'),'Story Portrait':('JPEG',92,2560),'Slide Ready':('JPEG',93,2048)}[preset_export]
+preset_export=st.selectbox('Export preset',['Custom','Web High Quality','Social 1080','Archive PNG','Email Compact','4K Display','Privacy PNG','Photo Print','Phone Wallpaper','Square Profile','Messaging','Web Thumbnail','Portfolio','Low Bandwidth','Presentation HD','Presentation 4K','Blog Optimized','Master JPEG','Gallery WebP','Quick Share','Social High Quality','Proof JPEG','Mobile WebP','Client Review','Contact Sheet Web','Lossless Master','Desktop Wallpaper','Fast Preview','Marketplace','Tiny Web','Portfolio Master','Chat Optimized','Email Small','Web Hero','Detailed Web','Draft Proof','Print Proof','Ultra Web','Retina Web','Original Backup','Smart Web','High Res JPEG','Editorial Web','Archive JPEG','Story Portrait','Slide Ready','Cinematic Web','Social Master'])
+defaults={'Custom':('JPEG',92,'Original'),'Web High Quality':('WEBP',90,2048),'Social 1080':('JPEG',90,1080),'Archive PNG':('PNG',100,'Original'),'Email Compact':('JPEG',82,1600),'4K Display':('JPEG',94,4096),'Privacy PNG':('PNG',100,'Original'),'Photo Print':('JPEG',96,'Original'),'Phone Wallpaper':('JPEG',92,2560),'Square Profile':('JPEG',92,1080),'Messaging':('JPEG',85,1600),'Web Thumbnail':('WEBP',82,1080),'Portfolio':('WEBP',94,2560),'Low Bandwidth':('WEBP',72,1600),'Presentation HD':('JPEG',92,2048),'Presentation 4K':('JPEG',94,4096),'Blog Optimized':('WEBP',88,2048),'Master JPEG':('JPEG',98,'Original'),'Gallery WebP':('WEBP',92,2048),'Quick Share':('JPEG',80,1080),'Social High Quality':('JPEG',94,2048),'Proof JPEG':('JPEG',75,1600),'Mobile WebP':('WEBP',84,1600),'Client Review':('JPEG',88,2048),'Contact Sheet Web':('WEBP',86,2048),'Lossless Master':('PNG',100,'Original'),'Desktop Wallpaper':('JPEG',93,4096),'Fast Preview':('WEBP',76,1080),'Marketplace':('JPEG',90,2048),'Tiny Web':('WEBP',68,1080),'Portfolio Master':('JPEG',97,4096),'Chat Optimized':('WEBP',78,1600),'Email Small':('JPEG',76,1080),'Web Hero':('WEBP',91,2560),'Detailed Web':('WEBP',95,2560),'Draft Proof':('JPEG',70,1600),'Print Proof':('JPEG',95,4096),'Ultra Web':('WEBP',96,4096),'Retina Web':('WEBP',93,4096),'Original Backup':('PNG',100,'Original'),'Smart Web':('WEBP',90,2560),'High Res JPEG':('JPEG',96,4096),'Editorial Web':('WEBP',92,2560),'Archive JPEG':('JPEG',99,'Original'),'Story Portrait':('JPEG',92,2560),'Slide Ready':('JPEG',93,2048),'Cinematic Web':('WEBP',94,2560),'Social Master':('JPEG',96,2560)}[preset_export]
 a,b,c,d=st.columns([1,1,1,2]); formats=['JPEG','PNG','WEBP']; fmt=a.selectbox('Format',formats,index=formats.index(defaults[0])); quality=b.slider('Quality',60,100,defaults[1]); edges=['Original',4096,2560,2048,1600,1080]; maxside=c.selectbox('Long edge',edges,index=edges.index(defaults[2])); name=d.text_input('Filename','peabox-edit')
 custom_size=st.toggle('Custom export dimensions'); keep_ratio=True
 if custom_size:
