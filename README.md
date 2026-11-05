@@ -1,7 +1,6 @@
 # PeaBox Photo Lab
 
 **Current release:** v0.2.30  
-**Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
 A privacy-first, local photo editor for creators, bloggers, small businesses, and everyday users. It runs in a browser while Python, Streamlit, Pillow, and NumPy perform the editing.
