@@ -1,19 +1,24 @@
-# PeaBox Photo Lab v0.2.29
+# PeaBox Photo Lab v0.2.30
 
-A quality-focused release built from v0.2.28. No existing editing capability is intentionally removed.
+An end-to-end UI quality release built cumulatively from v0.2.29.
 
-## Reliability and architecture
-- Extracted the UI-independent image-processing engine to `peabox_core.py`.
-- Reduced `app.py` from approximately 574 lines to a smaller UI/orchestration layer.
-- Added automated tests covering representative core filters, resizing/cropping, image analysis, JPEG/PNG/WebP export, extreme dimensions, and non-destructive behavior.
-- Added `validate_release.py` for version alignment, source compilation, and required-file validation.
-- Added a GitHub Actions quality workflow.
-- Added `requirements-dev.txt` with pytest and Ruff ranges.
+## UI test coverage
+- Added Streamlit AppTest automation for the complete rendered application flow.
+- Tested every option across all select-box menus, including quick styles, crop ratios, creative effects, positions, export groups, formats, and every export preset.
+- Tested every slider at minimum and maximum boundaries and restored defaults after each check.
+- Tested every toggle in both on and off states.
+- Tested all text and editable colour actions.
+- Tested conditional custom width/height controls and JPEG, PNG, and WebP export paths.
+- Total UI action/state checks: 284.
 
-## UX quality
-- Consolidated the long export preset selector into logical groups: Recommended, Web, Social & sharing, Professional, Print & archive, and All presets.
-- The complete v0.2.28 preset inventory remains accessible through All presets.
+## Fixes
+- Replaced deprecated Streamlit `use_container_width=True` calls with `width="stretch"`.
+- Added deterministic `PEABOX_TEST_MODE=1` generated-image plumbing so automated tests can traverse the full app without bypassing normal upload behavior for users.
+
+## Validation
+- 14 pytest tests pass, including 8 UI end-to-end tests and 6 core/regression tests.
+- Python compilation, release validation, and ZIP integrity pass.
 
 ## Release conventions
-- Version: 0.2.29
-- Archive: peabox-photo-lab-v0.2.29.zip
+- Version: 0.2.30
+- Archive: peabox-photo-lab-v0.2.30.zip

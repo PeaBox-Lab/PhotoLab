@@ -1,6 +1,6 @@
 # PeaBox Photo Lab
 
-**Current release:** v0.2.29  
+**Current release:** v0.2.30  
 **Version format:** `99.99.99`  
 **Release ZIP naming:** `peabox-photo-lab-v<version>.zip`
 
@@ -244,6 +244,20 @@ MIT
 - Export presets are grouped for easier navigation; the All presets group preserves the complete legacy preset inventory.
 
 ### Quality checks
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+python validate_release.py
+pytest
+```
+
+
+## v0.2.30 UI test coverage
+- Streamlit AppTest end-to-end suite covers every rendered menu option and interactive control.
+- 13 select boxes, 82 sliders, 12 toggles, 3 editable text inputs, 10 editable colour controls, the rotation selector, conditional custom dimensions, all three export formats, and the full preset inventory are exercised.
+- 284 UI action/state checks are performed across the test suite.
+- Set `PEABOX_TEST_MODE=1` only for automated testing; it supplies a deterministic generated image and does not change the normal upload-first experience.
+
+### Run complete validation
 ```bash
 pip install -r requirements.txt -r requirements-dev.txt
 python validate_release.py

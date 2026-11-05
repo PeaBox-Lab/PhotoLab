@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.30 - End-to-end UI test release
+- Added Streamlit AppTest end-to-end automation.
+- Exercised every select-box menu option, rotation option, toggle state, slider boundary, editable text field, color action, custom-dimension input, export format, and all export presets.
+- Added a deterministic test-image seam enabled only by `PEABOX_TEST_MODE=1`; normal users still start with the upload workflow.
+- Fixed deprecated Streamlit `use_container_width` usage by migrating to `width="stretch"`.
+- Retained all v0.2.29 features and presets.
+
+
 ## 0.2.29 - Quality release
 - Split the image-processing engine into `peabox_core.py`, reducing UI/core coupling.
 - Added automated pytest smoke, regression, extreme-dimension, immutability, analysis-contract, and export-format tests.

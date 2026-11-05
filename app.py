@@ -1,11 +1,11 @@
-import io, json, colorsys
+import io, json, colorsys, os
 from pathlib import Path
 import numpy as np
 import streamlit as st
 from PIL import Image, ImageChops, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps, ExifTags
 
 st.set_page_config(page_title="PeaBox Photo Lab",page_icon="📷",layout="wide")
-st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.29</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
+st.markdown("""<style>.block-container{padding-top:1rem;max-width:1550px}.hero{padding:18px 22px;border-radius:20px;background:linear-gradient(120deg,#4f46e5,#0891b2);color:#fff}.hero h1{margin:0}.muted{opacity:.75}</style><div class='hero'><h1>PeaBox Photo Lab v0.2.30</h1><p>A friendly, private, non-destructive photo studio powered by Python.</p></div>""",unsafe_allow_html=True)
 R=Image.Resampling.LANCZOS
 
 from peabox_core import (
@@ -99,7 +99,8 @@ with st.sidebar:
     with st.expander('Brand kit and finishing'):
         border=st.slider('Border width %',0.,8.,0.,.25); bc=st.color_picker('Border colour','#ffffff'); wm=st.text_input('Watermark'); wp=st.selectbox('Watermark position',['Bottom right','Bottom left','Top right','Top left','Center']); wo=st.slider('Watermark opacity',20,255,150)
 
-if not up:
+test_mode=os.getenv('PEABOX_TEST_MODE')=='1'
+if not up and not test_mode:
     st.info('Upload a photo to begin. All edits are non-destructive and regenerate from the original.')
     c1,c2,c3,c4=st.columns(4)
     c1.markdown("**Quick workflow**\n\nUpload, pick a preset, refine, and export.")
@@ -107,8 +108,11 @@ if not up:
     c3.markdown("**Creative Lab**\n\nColour pop, duotone, sketch, pixel art, glow, and vignette.")
     c4.markdown("**Privacy**\n\nLocal processing and fresh exports without copied EXIF metadata.")
     st.stop()
-try: original=Image.open(up); original.load(); original=rgb(original)
-except Exception as e: st.error(f'Could not open this image: {e}'); st.stop()
+if test_mode and not up:
+    x=np.linspace(0,255,320,dtype=np.uint8); a=np.zeros((200,320,3),dtype=np.uint8); a[...,0]=x; a[...,1]=128; a[...,2]=255-x; original=Image.fromarray(a,'RGB')
+else:
+    try: original=Image.open(up); original.load(); original=rgb(original)
+    except Exception as e: st.error(f'Could not open this image: {e}'); st.stop()
 
 im=crop_ratio(original,aspect)
 if rot: im=im.rotate(-rot,expand=True,resample=Image.Resampling.BICUBIC)
@@ -184,8 +188,8 @@ with edit_tab:
     show_horizon=st.toggle('Show horizon guide'); after_preview=horizon_overlay(after_preview) if show_horizon else after_preview
     show_diagonals=st.toggle('Show diagonal composition guide'); after_preview=diagonal_overlay(after_preview) if show_diagonals else after_preview
     if show:
-        a,b=st.columns(2); a.subheader('Before'); a.image(original,use_container_width=True); b.subheader('After'); b.image(after_preview,use_container_width=True)
-    else: st.image(after_preview,use_container_width=True)
+        a,b=st.columns(2); a.subheader('Before'); a.image(original,width='stretch'); b.subheader('After'); b.image(after_preview,width='stretch')
+    else: st.image(after_preview,width='stretch')
     st.caption(f'Original {original.width}×{original.height} | Edited {im.width}×{im.height}')
 with creator_tab:
     st.subheader('Colour palette extractor')
@@ -194,7 +198,7 @@ with creator_tab:
     st.code(json.dumps({'palette':cols},indent=2),language='json')
     st.subheader('Preset proof sheet')
     names=['Original','Clean Pop','Warm Film','Cool Editorial','Mono Punch','Vintage Fade','Portrait Soft','Cinematic','High Key']; proof=contact_sheet([original]+[preset(original,n) for n in names[1:]],names)
-    st.image(proof,use_container_width=True)
+    st.image(proof,width='stretch')
     pb=io.BytesIO(); proof.save(pb,'JPEG',quality=90); st.download_button('Download style proof sheet',pb.getvalue(),'peabox-style-proof.jpg','image/jpeg')
     st.subheader('Social format pack')
     pack=[]
@@ -292,5 +296,5 @@ elif fmt=='WEBP': kw|={'quality':quality,'method':6}
 else: kw|={'optimize':True}
 out.save(buf,**kw); ext={'JPEG':'jpg','PNG':'png','WEBP':'webp'}[fmt]; mime={'JPEG':'image/jpeg','PNG':'image/png','WEBP':'image/webp'}[fmt]
 dims,mp=pixel_dimensions(out); st.caption(f'Output: {dims} px | {mp:.2f} MP | {fmt} | Quality {quality if fmt != "PNG" else "lossless"} | Encoded size: {len(buf.getvalue())/1024:.1f} KB')
-st.download_button('Download edited photo',buf.getvalue(),f'{Path(name).stem}.{ext}',mime,type='primary',use_container_width=True)
+st.download_button('Download edited photo',buf.getvalue(),f'{Path(name).stem}.{ext}',mime,type='primary',width='stretch')
 st.caption('Keyboard accessibility depends on your browser. Every control has a visible label, and the original is never overwritten.')
